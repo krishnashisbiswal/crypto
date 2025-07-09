@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AE Platform - Decentralizing Energy. Empowering the World.</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-oil-can"></i>
+                <span>AE</span>
+            </div>
+            <ul class="nav-menu">
+               <li><a href="{% url "accounts:home" %}" class="nav-link active">Home</a></li>
+                <li><a href="{% url "accounts:about" %}" class="nav-link">About</a></li>
+                <li><a href="{% url "accounts:revolution" %}" class="nav-link">The Revolution</a></li>
+                <li><a href="{% url "accounts:vision" %}" class="nav-link">Vision</a></li>  
+                <li><a href="{% url "accounts:faq" %}" class="nav-link ">FAQ</a></li>
+            </ul>
+            <div class="nav-buttons">
+                <button class="btn btn-outline">Sign In</button>
+                <button class="btn btn-primary">Sign Up</button>
+                <div class="language-selector">
+                    <i class="fas fa-globe"></i>
+                    <span>EN</span>
+                </div>
+            </div>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <!-- Animated Background -->
+        <div class="hero-bg-animation">
+            <div class="floating-particles">
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+            </div>
+            <div class="gradient-orbs">
+                <div class="orb orb-1"></div>
+                <div class="orb orb-2"></div>
+                <div class="orb orb-3"></div>
+            </div>
+        </div>
+
+        <!-- Trading Interface (Right Side) -->
+        <div class="hero-trading-interface">
+            <div class="trading-dashboard">
+                <div class="dashboard-header">
+                    <div class="live-indicator">
+                        <span class="live-dot"></span>
+                        <span>LIVE MARKET</span>
+                    </div>
+                    <div class="dashboard-time" id="currentTime"></div>
+                </div>
+                
+                <div class="price-display">
+                    <div class="main-asset">
+                        <div class="asset-info">
+                            <div class="asset-icon">🛢️</div>
+                            <div class="asset-details">
+                                <span class="asset-name">AE Token</span>
+                                <span class="asset-type">Crude Oil</span>
+                            </div>
+                        </div>
+                        <div class="price-info">
+                            <div class="current-price" id="livePrice">$89.45</div>
+                            <div class="price-change positive" id="priceChange">+$2.34 (+2.67%)</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mini-chart">
+                    <canvas id="heroChart" width="300" height="120"></canvas>
+                </div>
+
+                <div class="quick-stats">
+                    <div class="stat-item">
+                        <span class="label">24h High</span>
+                        <span class="value">$92.18</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="label">24h Low</span>
+                        <span class="value">$86.73</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="label">Volume</span>
+                        <span class="value">2.8M</span>
+                    </div>
+                </div>
+
+                <div class="trade-actions">
+                    <button class="trade-btn buy-btn">
+                        <i class="fas fa-arrow-up"></i>
+                        BUY
+                    </button>
+                    <button class="trade-btn sell-btn">
+                        <i class="fas fa-arrow-down"></i>
+                        SELL
+                    </button>
+                </div>
+            </div>
+
+            <!-- Floating Cards -->
+            <div class="floating-card card-1">
+                <div class="card-content">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>Secure Trading</span>
+                </div>
+            </div>
+            <div class="floating-card card-2">
+                <div class="card-content">
+                    <i class="fas fa-bolt"></i>
+                    <span>Instant Settlement</span>
+                </div>
+            </div>
+            <div class="floating-card card-3">
+                <div class="card-content">
+                    <i class="fas fa-globe"></i>
+                    <span>Global Access</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hero Content -->
+        <div class="hero-content">
+            <div class="container">
+                <div class="hero-main">
+                    <div class="hero-badge">
+                        <i class="fas fa-rocket"></i>
+                        <span>Revolutionary Blockchain Platform</span>
+                    </div>
+                    
+                    <h1 class="hero-title">
+                        <span class="title-line-1">Decentralizing Energy.</span>
+                        <span class="title-line-2 highlight-text">Empowering the World.</span>
+                    </h1>
+                    
+                    <p class="hero-description">
+                        Transform the crude oil economy through blockchain technology. Trade tokenized oil with unprecedented transparency, lightning-fast efficiency, and absolute trust. Join the energy revolution today.
+                    </p>
+                    
+                    <div class="hero-buttons">
+                        <button class="btn btn-primary btn-large btn-glow" id="investBtn">
+                            <i class="fas fa-chart-line"></i>
+                            <span>Start Trading</span>
+                            <div class="btn-shine"></div>
+                        </button>
+                        <button class="btn btn-outline btn-large" id="demoBtn">
+                            <i class="fas fa-play"></i>
+                            <span>Watch Demo</span>
+                        </button>
+                    </div>
+                    
+                    <div class="hero-stats">
+                        <div class="stat-card">
+                            <div class="stat-icon">💰</div>
+                            <div class="stat-info">
+                                <span class="stat-number">$2.7T</span>
+                                <span class="stat-label">Global Oil Market</span>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">⚡</div>
+                            <div class="stat-info">
+                                <span class="stat-number">24/7</span>
+                                <span class="stat-label">Trading Available</span>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">🛢️</div>
+                            <div class="stat-info">
+                                <span class="stat-number">1:1</span>
+                                <span class="stat-label">Oil Backed Tokens</span>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">🚀</div>
+                            <div class="stat-info">
+                                <span class="stat-number">0.1s</span>
+                                <span class="stat-label">Settlement Time</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="trust-indicators">
+                        <div class="trust-item">
+                            <i class="fas fa-users"></i>
+                            <span>50K+ Active Traders</span>
+                        </div>
+                        <div class="trust-item">
+                            <i class="fas fa-star"></i>
+                            <span>4.8/5 Rating</span>
+                        </div>
+                        <div class="trust-item">
+                            <i class="fas fa-lock"></i>
+                            <span>Bank-Grade Security</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scroll Indicator -->
+        <div class="scroll-indicator">
+            <div class="scroll-text">Scroll to explore</div>
+            <div class="scroll-arrow">
+                <i class="fas fa-chevron-down"></i>
+            </div>
+        </div>
+    </section>
+
+    <!-- Market Data -->
+    <section class="market-data">
+        <div class="container">
+            <div class="market-ticker">
+                <div class="ticker-item">
+                    <span class="label">Gold:</span>
+                    <span class="value" id="goldPrice">$2,023.45</span>
+                    <span class="change positive">+0.8%</span>
+                </div>
+                <div class="ticker-item">
+                    <span class="label">Crude Oil:</span>
+                    <span class="value" id="oilPrice">$89.23</span>
+                    <span class="change positive">+1.2%</span>
+                </div>
+                <div class="ticker-item">
+                    <span class="label">USD/INR:</span>
+                    <span class="value" id="usdInr">₹83.45</span>
+                    <span class="change negative">-0.3%</span>
+                </div>
+                <div class="ticker-item">
+                    <span class="label">BTC:</span>
+                    <span class="value" id="btcPrice">$97,000</span>
+                    <span class="change positive">+2.1%</span>
+                </div>
+                <div class="ticker-item">
+                    <span class="label">NASDAQ:</span>
+                    <span class="value" id="nasdaq">15,234.67</span>
+                    <span class="change positive">+0.5%</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features">
+        <div class="container">
+            <div class="section-header">
+                <h2>Revolutionary Platform Features</h2>
+                <p>We regularly improve our platform to make your trading comfortable and safe.</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-cube"></i>
+                    </div>
+                    <h3>Asset-Backed Tokenization</h3>
+                    <p>Each AE token is backed 1:1 by physical crude oil reserves, creating digital twins of real barrels with complete metadata.</p>
+                    <a href="#" class="feature-link">Learn More <i class="fas fa-arrow-right"></i></a>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <h3>Instant Settlements</h3>
+                    <p>Smart contracts automate delivery-versus-payment, compressing settlement cycles from weeks to seconds.</p>
+                    <a href="#" class="feature-link">Try It <i class="fas fa-arrow-right"></i></a>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3>24/7 Global Trading</h3>
+                    <p>Round-the-clock peer-to-peer trading across borders with real-time liquidity and market updates.</p>
+                    <a href="#" class="feature-link">Explore <i class="fas fa-arrow-right"></i></a>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-headset"></i>
+                    </div>
+                    <h3>Support 24/7</h3>
+                    <p>Our highly trained support staff is ready to assist you at any time with platform-related queries.</p>
+                    <a href="#" class="feature-link">Submit Request <i class="fas fa-arrow-right"></i></a>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-gift"></i>
+                    </div>
+                    <h3>Bonus Programs</h3>
+                    <p>Participate in tournaments and giveaways for traders to get bonuses and exclusive rewards.</p>
+                    <a href="#" class="feature-link">Get Bonus <i class="fas fa-arrow-right"></i></a>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-wallet"></i>
+                    </div>
+                    <h3>Easy Deposits & Withdrawals</h3>
+                    <p>Various deposit options and fast withdrawal of funds. The minimum deposit is only 10 USD.</p>
+                    <a href="#" class="feature-link">Start Trading <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section class="how-it-works">
+        <div class="container">
+            <div class="content-split">
+                <div class="content-left">
+                    <h2>Grow Your Capital by Making the Right Trading Predictions</h2>
+                    <p>Will the price go up or down? Predict the price movement of a trading asset and place a trade.</p>
+                    <button class="btn btn-primary">Try It for Free</button>
+                    <small>Practice on a demo account without registration</small>
+                    <div class="price-chart">
+                        <canvas id="priceChart"></canvas>
+                    </div>
+                </div>
+                <div class="content-right">
+                    <div class="steps-grid">
+                        <div class="step-card">
+                            <div class="step-icon">
+                                <i class="fas fa-search"></i>
+                            </div>
+                            <h4>1. Select an Asset</h4>
+                            <p>Choose from our range of tokenized oil assets</p>
+                        </div>
+                        <div class="step-card">
+                            <div class="step-icon">
+                                <i class="fas fa-chart-bar"></i>
+                            </div>
+                            <h4>2. Monitor the Chart</h4>
+                            <p>Analyze real-time market data and trends</p>
+                        </div>
+                        <div class="step-card">
+                            <div class="step-icon">
+                                <i class="fas fa-mouse-pointer"></i>
+                            </div>
+                            <h4>3. Place a Trade</h4>
+                            <p>Execute your strategy with smart contracts</p>
+                        </div>
+                        <div class="step-card">
+                            <div class="step-icon">
+                                <i class="fas fa-trophy"></i>
+                            </div>
+                            <h4>4. Get the Result</h4>
+                            <p>Receive instant settlement and profits</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="testimonials">
+        <div class="container">
+            <div class="section-header">
+                <h2>What People Say About Us</h2>
+                <p>We asked our customers to rate AE on a five-point scale.</p>
+            </div>
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <div class="testimonial-header">
+                        <div class="user-info">
+                            <div class="user-avatar">SG</div>
+                            <div class="user-details">
+                                <h4>Shree Ganesh</h4>
+                                <small>Registered: November 01, 2024 | Earned: $919</small>
+                            </div>
+                        </div>
+                        <div class="rating">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                    </div>
+                    <p>I've been using AE for some time now, and the experience has been excellent. The platform is straightforward to navigate, with a clean and user-friendly design.</p>
+                    <a href="#" class="read-more">Read More <i class="fas fa-arrow-right"></i></a>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-header">
+                        <div class="user-info">
+                            <div class="user-avatar">BH</div>
+                            <div class="user-details">
+                                <h4>Bhagvan</h4>
+                                <small>Registered: November 15, 2023 | Earned: $612</small>
+                            </div>
+                        </div>
+                        <div class="rating">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                    </div>
+                    <p>AE is my best choice as a trading broker. The software is really great and very easy when it comes to withdrawing and depositing.</p>
+                    <a href="#" class="read-more">Read More <i class="fas fa-arrow-right"></i></a>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-header">
+                        <div class="user-info">
+                            <div class="user-avatar">TW</div>
+                            <div class="user-details">
+                                <h4>Terwase</h4>
+                                <small>Registered: December 03, 2024 | Earned: $913</small>
+                            </div>
+                        </div>
+                        <div class="rating">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                    </div>
+                    <p>The interface is easy and simple to understand and use. The proximity ratio for placing an up or down trade/buy or sell ratio is 1:1. The app works perfectly.</p>
+                    <a href="#" class="read-more">Read More <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+            <div class="text-center">
+                <button class="btn btn-outline">View All Reviews</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Mobile App -->
+    <section class="mobile-app">
+        <div class="container">
+            <div class="content-split">
+                <div class="content-left">
+                    <div class="phone-mockup">
+                        <div class="phone-screen">
+                            <div class="app-rating">
+                                <span class="rating-badge">APP RATING</span>
+                                <span class="rating-score">4.8</span>
+                                <div class="stars">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="content-right">
+                    <h2>Mobile App is Always at Your Fingertips</h2>
+                    <p>Download our user-friendly trading app to your mobile device and start trading.</p>
+                    <div class="app-downloads">
+                        <a href="#" class="download-btn">
+                            <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTM1IiBoZWlnaHQ9IjQwIiB2aWV3Qm94PSIwIDAgMTM1IDQwIiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgo8cmVjdCB3aWR0aD0iMTM1IiBoZWlnaHQ9IjQwIiByeD0iNSIgZmlsbD0iIzAwMCIvPgo8dGV4dCB4PSI2OCIgeT0iMjAiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTIiPkdldCBpdCBvbiBHb29nbGUgUGxheTwvdGV4dD4KPC9zdmc+" alt="Google Play">
+                        </a>
+                        <a href="#" class="download-btn">
+                            <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTM1IiBoZWlnaHQ9IjQwIiB2aWV3Qm94PSIwIDAgMTM1IDQwIiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgo8cmVjdCB3aWR0aD0iMTM1IiBoZWlnaHQ9IjQwIiByeD0iNSIgZmlsbD0iIzAwMCIvPgo8dGV4dCB4PSI2OCIgeT0iMjAiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTIiPkRvd25sb2FkIG9uIEFwcCBTdG9yZTwvdGV4dD4KPC9zdmc+" alt="App Store">
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section id="faq" class="faq">
+        <div class="container">
+            <div class="section-header">
+                <h2>Frequently Asked Questions</h2>
+                <p>See the most common questions of new traders answered here.</p>
+            </div>
+            <div class="faq-container">
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>How do I learn how to trade?</h3>
+                        <i class="fas fa-plus"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Start with our demo account to practice trading without risk. We also provide educational resources, tutorials, and market analysis to help you understand oil trading and blockchain technology.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>How long does it take to withdraw funds?</h3>
+                        <i class="fas fa-plus"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Withdrawals are processed instantly through smart contracts. Fiat withdrawals typically take 1-3 business days depending on your payment method and bank processing times.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>What is trading platform and what it is for?</h3>
+                        <i class="fas fa-plus"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>AE is a blockchain-based platform for trading tokenized crude oil. It allows you to buy, sell, and trade oil-backed digital assets with transparency, instant settlement, and global accessibility.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>Can I trade using a phone / mobile device?</h3>
+                        <i class="fas fa-plus"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Yes! Our mobile app is available for both iOS and Android devices. You can trade, monitor your portfolio, and access all platform features on your mobile device.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>What is the minimum deposit amount?</h3>
+                        <i class="fas fa-plus"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>The minimum deposit amount is $10 USD. This low barrier to entry makes AE accessible to traders of all levels and investment capacities.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>Are there any deposit or withdrawal fees?</h3>
+                        <i class="fas fa-plus"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>We charge minimal platform fees for trading and settlement. Deposit fees vary by payment method. All fees are transparently displayed before confirming any transaction.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Newsletter -->
+    <section class="newsletter">
+        <div class="container">
+            <div class="newsletter-content">
+                <h2>Stay Updated with AE</h2>
+                <p>Subscribe to our newsletter for the latest updates on tokenized oil trading, market insights, and platform features.</p>
+                <form class="newsletter-form">
+                    <input type="email" placeholder="Enter your email address" required>
+                    <button type="submit" class="btn btn-primary">Subscribe</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-logo">
+                        <i class="fas fa-oil-can"></i>
+                        <span>AE</span>
+                    </div>
+                    <p>Decentralizing Energy. Empowering the World.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-telegram"></i></a>
+                        <a href="#"><i class="fab fa-discord"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h4>Platform</h4>
+                    <ul>
+                        <li><a href="#">Demo Account</a></li>
+                        <li><a href="#">Live Trading</a></li>
+                        <li><a href="#">Mobile App</a></li>
+                        <li><a href="#">API Documentation</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="#">Whitepaper</a></li>
+                        <li><a href="#">Educational Center</a></li>
+                        <li><a href="#">Market Analysis</a></li>
+                        <li><a href="#">Support Center</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Legal</h4>
+                    <ul>
+                        <li><a href="#">Terms of Service</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Risk Disclosure</a></li>
+                        <li><a href="#">Compliance</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 AE Platform. All rights reserved.</p>
+                <div class="footer-links">
+                    <a href="#">Privacy</a>
+                    <a href="#">Terms</a>
+                    <a href="#">Cookies</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div class="modal-header">
+                <h2>Welcome Back</h2>
+                <p>Sign in to your AE account</p>
+            </div>
+            <form class="login-form">
+                <div class="form-group">
+                    <input type="email" placeholder="Email address" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" placeholder="Password" required>
+                </div>
+                <button type="submit" class="btn btn-primary btn-full">Sign In</button>
+                <p class="form-footer">
+                    Don't have an account? <a href="#" id="showSignup">Sign up here</a>
+                </p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Signup Modal -->
+    <div id="signupModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div class="modal-header">
+                <h2>Join AE Platform</h2>
+                <p>Create your account to start trading</p>
+            </div>
+            <form class="signup-form">
+                <div class="form-group">
+                    <input type="text" placeholder="Full Name" required>
+                </div>
+                <div class="form-group">
+                    <input type="email" placeholder="Email address" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" placeholder="Password" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" placeholder="Confirm Password" required>
+                </div>
+                <div class="form-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" required>
+                        I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
+                    </label>
+                </div>
+                <button type="submit" class="btn btn-primary btn-full">Create Account</button>
+                <p class="form-footer">
+                    Already have an account? <a href="#" id="showLogin">Sign in here</a>
+                </p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="{% static 'script.js' %}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+</body>
+</html>

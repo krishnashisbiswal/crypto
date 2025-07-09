@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About AE Platform - Transforming Crude Oil Trading</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css'%}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Extra CSS for About Page -->
+    <style>
+        .about-hero {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+            padding: 140px 0 80px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .about-hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(34,197,94,0.1)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+            opacity: 0.3;
+        }
+
+        .mission-vision-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 32px;
+            margin: 60px 0;
+        }
+
+        .mission-card, .vision-card {
+            background: linear-gradient(145deg, rgba(30, 41, 59, 0.8), rgba(51, 65, 85, 0.6));
+            border: 1px solid rgba(34, 197, 94, 0.2);
+            border-radius: 20px;
+            padding: 40px;
+            backdrop-filter: blur(10px);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .mission-card::before, .vision-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-primary);
+            transform: scaleX(0);
+            transition: transform 0.4s ease;
+        }
+
+        .mission-card:hover::before, .vision-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .mission-card:hover, .vision-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            border-color: rgba(34, 197, 94, 0.4);
+        }
+
+        .card-icon {
+            width: 80px;
+            height: 80px;
+            background: var(--gradient-primary);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 24px;
+            font-size: 32px;
+            color: white;
+            box-shadow: 0 10px 25px rgba(34, 197, 94, 0.3);
+        }
+
+        .team-showcase {
+            background: var(--dark-secondary);
+            padding: 100px 0;
+            position: relative;
+        }
+
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 32px;
+            margin-top: 60px;
+        }
+
+        .team-member {
+            text-align: center;
+            background: var(--dark-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 32px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .team-member::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent, rgba(34, 197, 94, 0.05), transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .team-member:hover::after {
+            opacity: 1;
+        }
+
+        .team-member:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary-color);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .member-avatar {
+            width: 120px;
+            height: 120px;
+            background: var(--gradient-primary);
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            font-weight: 700;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .member-avatar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transform: translateX(-100%);
+            transition: transform 0.6s ease;
+        }
+
+        .team-member:hover .member-avatar::before {
+            transform: translateX(100%);
+        }
+
+        .values-section {
+            padding: 100px 0;
+            background: var(--dark-bg);
+        }
+
+        .values-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 32px;
+            margin-top: 60px;
+        }
+
+        .value-item {
+            text-align: center;
+            padding: 32px 24px;
+            background: rgba(30, 41, 59, 0.5);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .value-item::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: radial-gradient(circle, rgba(34, 197, 94, 0.1), transparent);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: all 0.5s ease;
+        }
+
+        .value-item:hover::before {
+            width: 200px;
+            height: 200px;
+        }
+
+        .value-icon {
+            width: 64px;
+            height: 64px;
+            background: var(--gradient-secondary);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 24px;
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .value-item:hover .value-icon {
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3);
+        }
+
+        .journey-timeline {
+            padding: 100px 0;
+            background: var(--dark-secondary);
+        }
+
+        .timeline {
+            position: relative;
+            max-width: 800px;
+            margin: 60px auto 0;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--gradient-primary);
+            transform: translateX(-50%);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin: 40px 0;
+            width: 50%;
+            padding: 24px;
+        }
+
+        .timeline-item:nth-child(odd) {
+            left: 0;
+            padding-right: 40px;
+            text-align: right;
+        }
+
+        .timeline-item:nth-child(even) {
+            left: 50%;
+            padding-left: 40px;
+            text-align: left;
+        }
+
+        .timeline-dot {
+            position: absolute;
+            top: 24px;
+            width: 16px;
+            height: 16px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            box-shadow: 0 0 0 4px var(--dark-secondary), 0 0 0 6px var(--primary-color);
+        }
+
+        .timeline-item:nth-child(odd) .timeline-dot {
+            right: -8px;
+        }
+
+        .timeline-item:nth-child(even) .timeline-dot {
+            left: -8px;
+        }
+
+        .stats-banner {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            padding: 80px 0;
+            text-align: center;
+            color: white;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            margin-top: 40px;
+        }
+
+        .stat-box {
+            padding: 20px;
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        @media (max-width: 768px) {
+            .about-hero {
+                padding: 120px 0 60px;
+            }
+            
+            .mission-vision-cards {
+                grid-template-columns: 1fr;
+                gap: 24px;
+                margin: 40px 0;
+            }
+            
+            .timeline::before {
+                left: 20px;
+            }
+            
+            .timeline-item {
+                width: 100%;
+                left: 0 !important;
+                padding-left: 50px !important;
+                padding-right: 24px !important;
+                text-align: left !important;
+            }
+            
+            .timeline-dot {
+                left: 12px !important;
+                right: auto !important;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-oil-can"></i>
+                <span>AE</span>
+            </div>
+            <ul class="nav-menu">
+            <li><a href="{% url "accounts:home" %}" class="nav-link">Home</a></li>
+                <li><a href="{% url "accounts:about" %}" class="nav-link active">About</a></li>
+                <li><a href="{% url "accounts:revolution" %}" class="nav-link">The Revolution</a></li>
+                <li><a href="{% url "accounts:vision" %}" class="nav-link">Vision</a></li>  
+                <li><a href="{% url "accounts:faq" %}" class="nav-link ">FAQ</a></li>
+            </ul>
+            <div class="nav-buttons">
+                <button class="btn btn-outline">Sign In</button>
+                <button class="btn btn-primary">Sign Up</button>
+                <div class="language-selector">
+                    <i class="fas fa-globe"></i>
+                    <span>EN</span>
+                </div>
+            </div>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- About Hero -->
+    <section class="about-hero">
+        <div class="container">
+            <div class="text-center">
+                <h1 style="font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 800; margin-bottom: 24px;">
+                    About <span class="highlight-text">AE Platform</span>
+                </h1>
+                <p style="font-size: 20px; color: var(--text-secondary); max-width: 700px; margin: 0 auto; line-height: 1.6;">
+                    Transforming global crude oil trading through blockchain innovation, transparency, and trust.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Mission & Vision -->
+    <section style="padding: 100px 0; background: var(--dark-bg);">
+        <div class="container">
+            <div class="mission-vision-cards">
+                <div class="mission-card">
+                    <div class="card-icon">
+                        <i class="fas fa-bullseye"></i>
+                    </div>
+                    <h3 style="font-size: 24px; font-weight: 700; margin-bottom: 16px; color: var(--text-primary);">Our Mission</h3>
+                    <p style="color: var(--text-secondary); line-height: 1.7; margin-bottom: 20px;">
+                        AE is on a mission to transform global crude oil trading by harnessing blockchain's power to bring unprecedented transparency, efficiency and trust to the energy markets.
+                    </p>
+                    <p style="color: var(--text-secondary); line-height: 1.7;">
+                        We tokenize physical oil barrels into digital assets, unlocking new liquidity and automating the trade lifecycle to eliminate legacy delays. Our platform creates a single, immutable ledger for every transaction, setting a new standard for secure, real-time trade execution.
+                    </p>
+                </div>
+                
+                <div class="vision-card">
+                    <div class="card-icon">
+                        <i class="fas fa-eye"></i>
+                    </div>
+                    <h3 style="font-size: 24px; font-weight: 700; margin-bottom: 16px; color: var(--text-primary);">Our Vision</h3>
+                    <p style="color: var(--text-secondary); line-height: 1.7; margin-bottom: 20px;">
+                        The vision driving AE is a future where oil – and ultimately all energy commodities – are traded seamlessly on a decentralized network.
+                    </p>
+                    <p style="color: var(--text-secondary); line-height: 1.7;">
+                        By breaking down geographical and bureaucratic barriers, we aim to democratize access to the oil market worldwide, creating a more inclusive and efficient energy economy.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Challenge Section -->
+    <section style="padding: 100px 0; background: var(--dark-secondary);">
+        <div class="container">
+            <div class="text-center" style="margin-bottom: 60px;">
+                <h2 style="font-size: clamp(2rem, 4vw, 2.5rem); font-weight: 700; margin-bottom: 24px;">
+                    The Challenge in Oil Trading
+                </h2>
+                <p style="font-size: 18px; color: var(--text-secondary); max-width: 800px; margin: 0 auto; line-height: 1.6;">
+                    Traditional crude-oil trading remains paper-driven and fragmented, creating inefficiencies that cost the industry billions annually.
+                </p>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 32px;">
+                <div style="background: var(--dark-bg); border: 1px solid var(--border-color); border-radius: 16px; padding: 32px;">
+                    <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #ef4444, #dc2626); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px;">
+                        <i class="fas fa-clock" style="color: white; font-size: 24px;"></i>
+                    </div>
+                    <h4 style="font-size: 18px; font-weight: 600; margin-bottom: 12px;">Slow Settlements</h4>
+                    <p style="color: var(--text-secondary); line-height: 1.6;">
+                        Oil trades often take days or weeks to settle, bogged down by paper contracts, manual verification and multiple intermediaries.
+                    </p>
+                </div>
+                
+                <div style="background: var(--dark-bg); border: 1px solid var(--border-color); border-radius: 16px; padding: 32px;">
+                    <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #f59e0b, #d97706); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px;">
+                        <i class="fas fa-eye-slash" style="color: white; font-size: 24px;"></i>
+                    </div>
+                    <h4 style="font-size: 18px; font-weight: 600; margin-bottom: 12px;">Opaque Processes</h4>
+                    <p style="color: var(--text-secondary); line-height: 1.6;">
+                        Siloed data and fragmented information systems raise operational costs and expose trades to fraud and disputes.
+                    </p>
+                </div>
+                
+                <div style="background: var(--dark-bg); border: 1px solid var(--border-color); border-radius: 16px; padding: 32px;">
+                    <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #8b5cf6, #7c3aed); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px;">
+                        <i class="fas fa-dollar-sign" style="color: white; font-size: 24px;"></i>
+                    </div>
+                    <h4 style="font-size: 18px; font-weight: 600; margin-bottom: 12px;">High Fees</h4>
+                    <p style="color: var(--text-secondary); line-height: 1.6;">
+                        The $2 trillion oil market suffers from high fees and information asymmetry, making fair pricing and fast settlement difficult.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Team Section -->
+    <section class="team-showcase">
+        <div class="container">
+            <div class="text-center">
+                <h2 style="font-size: clamp(2rem, 4vw, 2.5rem); font-weight: 700; margin-bottom: 24px;">
+                    Our Expert Team
+                </h2>
+                <p style="font-size: 18px; color: var(--text-secondary); max-width: 700px; margin: 0 auto;">
+                    AE's founding team blends deep expertise in energy finance and blockchain technology.
+                </p>
+            </div>
+            
+            <div class="team-grid">
+                <div class="team-member">
+                    <div class="member-avatar">CEO</div>
+                    <h4 style="font-size: 20px; font-weight: 600; margin-bottom: 8px;">Chief Executive Officer</h4>
+                    <p style="color: var(--primary-color); font-size: 14px; margin-bottom: 16px;">Energy Finance Expert</p>
+                    <p style="color: var(--text-secondary); font-size: 14px; line-height: 1.6;">
+                        Decades of experience on Wall Street structuring energy trades and financing oil projects.
+                    </p>
+                </div>
+                
+                <div class="team-member">
+                    <div class="member-avatar">CTO</div>
+                    <h4 style="font-size: 20px; font-weight: 600; margin-bottom: 8px;">Chief Technology Officer</h4>
+                    <p style="color: var(--primary-color); font-size: 14px; margin-bottom: 16px;">Blockchain Infrastructure Veteran</p>
+                    <p style="color: var(--text-secondary); font-size: 14px; line-height: 1.6;">
+                        Built systems for leading crypto exchanges with deep blockchain technology expertise.
+                    </p>
+                </div>
+                
+                <div class="team-member">
+                    <div class="member-avatar">CRO</div>
+                    <h4 style="font-size: 20px; font-weight: 600; margin-bottom: 8px;">Chief Risk Officer</h4>
+                    <p style="color: var(--primary-color); font-size: 14px; margin-bottom: 16px;">Risk Management Specialist</p>
+                    <p style="color: var(--text-secondary); font-size: 14px; line-height: 1.6;">
+                        Expert in commodity trading risk and regulatory compliance frameworks.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Core Values -->
+    <section class="values-section">
+        <div class="container">
+            <div class="text-center">
+                <h2 style="font-size: clamp(2rem, 4vw, 2.5rem); font-weight: 700; margin-bottom: 24px;">
+                    Our Core Values
+                </h2>
+                <p style="font-size: 18px; color: var(--text-secondary); max-width: 600px; margin: 0 auto;">
+                    The principles that guide everything we do at AE Platform.
+                </p>
+            </div>
+            
+            <div class="values-grid">
+                <div class="value-item">
+                    <div class="value-icon">
+                        <i class="fas fa-eye"></i>
+                    </div>
+                    <h4 style="font-size: 18px; font-weight: 600; margin-bottom: 12px;">Transparency</h4>
+                    <p style="color: var(--text-secondary); font-size: 14px; line-height: 1.6;">
+                        We use blockchain's public ledger to make every trade visible and verifiable, removing information asymmetry.
+                    </p>
+                </div>
+                
+                <div class="value-item">
+                    <div class="value-icon">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <h4 style="font-size: 18px; font-weight: 600; margin-bottom: 12px;">Efficiency</h4>
+                    <p style="color: var(--text-secondary); font-size: 14px; line-height: 1.6;">
+                        Our platform automates settlement with smart contracts, cutting out redundant intermediaries.
+                    </p>
+                </div>
+                
+                <div class="value-item">
+                    <div class="value-icon">
+                        <i class="fas fa-network-wired"></i>
+                    </div>
+                    <h4 style="font-size: 18px; font-weight: 600; margin-bottom: 12px;">Decentralization</h4>
+                    <p style="color: var(--text-secondary); font-size: 14px; line-height: 1.6;">
+                        AE eliminates single points of failure by distributing the trade network across stakeholders.
+                    </p>
+                </div>
+                
+                <div class="value-item">
+                    <div class="value-icon">
+                        <i class="fas fa-globe"></i>
+                    </div>
+                    <h4 style="font-size: 18px; font-weight: 600; margin-bottom: 12px;">Global Access</h4>
+                    <p style="color: var(--text-secondary); font-size: 14px; line-height: 1.6;">
+                        Our platform is open 24/7 to anyone with internet access, breaking down regional barriers.
+                    </p>
+                </div>
+                
+                <div class="value-item">
+                    <div class="value-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h4 style="font-size: 18px; font-weight: 600; margin-bottom: 12px;">Security</h4>
+                    <p style="color: var(--text-secondary); font-size: 14px; line-height: 1.6;">
+                        Institutional-grade security with rigorous audits and regulatory compliance controls.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Journey Timeline -->
+    <section class="journey-timeline">
+        <div class="container">
+            <div class="text-center">
+                <h2 style="font-size: clamp(2rem, 4vw, 2.5rem); font-weight: 700; margin-bottom: 24px;">
+                    Our Journey
+                </h2>
+                <p style="font-size: 18px; color: var(--text-secondary);">
+                    Key milestones in building the future of energy trading.
+                </p>
+            </div>
+            
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <h4 style="font-size: 18px; font-weight: 600; margin-bottom: 8px;">Platform Foundation</h4>
+                    <p style="color: var(--text-secondary); font-size: 14px;">
+                        Established core team and began development of blockchain infrastructure for oil tokenization.
+                    </p>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <h4 style="font-size: 18px; font-weight: 600; margin-bottom: 8px;">Strategic Partnerships</h4>
+                    <p style="color: var(--text-secondary); font-size: 14px;">
+                        Formed alliances with oil producers, storage facilities, and regulatory bodies.
+                    </p>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <h4 style="font-size: 18px; font-weight: 600; margin-bottom: 8px;">Technology Development</h4>
+                    <p style="color: var(--text-secondary); font-size: 14px;">
+                        Completed smart contract development and security audits for tokenization platform.
+                    </p>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <h4 style="font-size: 18px; font-weight: 600; margin-bottom: 8px;">Global Expansion</h4>
+                    <p style="color: var(--text-secondary); font-size: 14px;">
+                        Expanding operations across key energy markets in Middle East, Asia, and Americas.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Banner -->
+    <section class="stats-banner">
+        <div class="container">
+            <h2 style="font-size: 2.5rem; font-weight: 800; margin-bottom: 16px;">
+                AE Platform by the Numbers
+            </h2>
+            <p style="font-size: 18px; opacity: 0.9;">
+                Building trust through transparency and proven results.
+            </p>
+            
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <span class="stat-number">$2.7T</span>
+                    <span class="stat-label">Global Oil Market Size</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-number">50K+</span>
+                    <span class="stat-label">Active Traders</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-number">24/7</span>
+                    <span class="stat-label">Market Availability</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-number">0.1s</span>
+                    <span class="stat-label">Settlement Time</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action -->
+    <section style="padding: 100px 0; background: var(--dark-bg); text-align: center;">
+        <div class="container">
+            <h2 style="font-size: clamp(2rem, 4vw, 2.5rem); font-weight: 700; margin-bottom: 24px;">
+                Ready to Join the Energy Revolution?
+            </h2>
+            <p style="font-size: 18px; color: var(--text-secondary); margin-bottom: 40px; max-width: 600px; margin-left: auto; margin-right: auto;">
+                Experience the future of oil trading with AE Platform. Start with a demo account or dive into live trading.
+            </p>
+            <div style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;">
+                <button class="btn btn-primary btn-large">
+                    <i class="fas fa-rocket"></i>
+                    Start Trading
+                </button>
+                <button class="btn btn-outline btn-large">
+                    <i class="fas fa-book"></i>
+                    Read Whitepaper
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-logo">
+                        <i class="fas fa-oil-can"></i>
+                        <span>AE</span>
+                    </div>
+                    <p>Decentralizing Energy. Empowering the World.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-telegram"></i></a>
+                        <a href="#"><i class="fab fa-discord"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h4>Platform</h4>
+                    <ul>
+                        <li><a href="#">Demo Account</a></li>
+                        <li><a href="#">Live Trading</a></li>
+                        <li><a href="#">Mobile App</a></li>
+                        <li><a href="#">API Documentation</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="#">Whitepaper</a></li>
+                        <li><a href="#">Educational Center</a></li>
+                        <li><a href="#">Market Analysis</a></li>
+                        <li><a href="#">Support Center</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Legal</h4>
+                    <ul>
+                        <li><a href="terms.html">Terms of Service</a></li>
+                        <li><a href="privacy.html">Privacy Policy</a></li>
+                        <li><a href="disclosure.html">Risk Disclosure</a></li>
+                        <li><a href="#">Compliance</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 AE Platform. All rights reserved.</p>
+                <div class="footer-links">
+                    <a href="privacy.html">Privacy</a>
+                    <a href="terms.html">Terms</a>
+                    <a href="#">Cookies</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="{% static 'script.js'%}"></script>
+</body>
+</html>

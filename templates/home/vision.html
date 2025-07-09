@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Vision - AE Platform's Future of Energy Trading</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css'%}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Extra CSS for Vision Page -->
+    <style>
+        .vision-hero {
+            background: 
+                linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.9)),
+                radial-gradient(circle at 30% 70%, rgba(34, 197, 94, 0.2) 0%, transparent 50%),
+                radial-gradient(circle at 70% 30%, rgba(59, 130, 246, 0.2) 0%, transparent 50%);
+            padding: 140px 0 100px;
+            position: relative;
+            overflow: hidden;
+            min-height: 80vh;
+            display: flex;
+            align-items: center;
+        }
+
+        .vision-hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><defs><pattern id="stars" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="20" cy="20" r="1" fill="rgba(34,197,94,0.5)"><animate attributeName="opacity" values="0.5;1;0.5" dur="3s" repeatCount="indefinite"/></circle><circle cx="80" cy="80" r="1" fill="rgba(59,130,246,0.5)"><animate attributeName="opacity" values="1;0.5;1" dur="4s" repeatCount="indefinite"/></circle><circle cx="50" cy="90" r="1" fill="rgba(139,92,246,0.5)"><animate attributeName="opacity" values="0.5;1;0.5" dur="5s" repeatCount="indefinite"/></circle></pattern></defs><rect width="1000" height="1000" fill="url(%23stars)"/></svg>');
+            opacity: 0.6;
+            animation: twinkle 10s ease-in-out infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.8; }
+        }
+
+        .mission-section {
+            background: var(--dark-bg);
+            padding: 120px 0;
+            position: relative;
+        }
+
+        .principles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 32px;
+            margin: 60px 0;
+        }
+
+        .principle-card {
+            background: linear-gradient(145deg, rgba(30, 41, 59, 0.8), rgba(51, 65, 85, 0.4));
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 40px 32px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .principle-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, transparent, rgba(34, 197, 94, 0.05), transparent);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .principle-card:hover::before {
+            opacity: 1;
+        }
+
+        .principle-card:hover {
+            transform: translateY(-12px);
+            border-color: rgba(34, 197, 94, 0.3);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+        }
+
+        .principle-icon {
+            width: 80px;
+            height: 80px;
+            background: var(--gradient-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+            font-size: 32px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(34, 197, 94, 0.3);
+        }
+
+        .principle-icon::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transform: translateX(-100%);
+            transition: transform 0.6s ease;
+        }
+
+        .principle-card:hover .principle-icon::after {
+            transform: translateX(100%);
+        }
+
+        .long-term-vision {
+            background: var(--dark-secondary);
+            padding: 120px 0;
+            position: relative;
+        }
+
+        .vision-roadmap {
+            margin: 80px 0;
+            position: relative;
+        }
+
+        .roadmap-timeline {
+            position: relative;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .roadmap-line {
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: var(--gradient-primary);
+            transform: translateX(-50%);
+            border-radius: 2px;
+        }
+
+        .roadmap-item {
+            position: relative;
+            margin: 80px 0;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .roadmap-item:nth-child(odd) .roadmap-content {
+            margin-right: 60px;
+            text-align: right;
+        }
+
+        .roadmap-item:nth-child(even) .roadmap-content {
+            margin-left: 60px;
+            text-align: left;
+        }
+
+        .roadmap-content {
+            flex: 1;
+            background: var(--dark-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 40px;
+            position: relative;
+            transition: all 0.4s ease;
+        }
+
+        .roadmap-content:hover {
+            transform: scale(1.03);
+            border-color: var(--primary-color);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .roadmap-dot {
+            position: absolute;
+            left: 50%;
+            top: 40px;
+            width: 24px;
+            height: 24px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            box-shadow: 0 0 0 8px var(--dark-secondary), 0 0 0 12px var(--primary-color);
+            animation: roadmapPulse 3s ease-in-out infinite;
+        }
+
+        @keyframes roadmapPulse {
+            0%, 100% {
+                box-shadow: 0 0 0 8px var(--dark-secondary), 0 0 0 12px var(--primary-color);
+            }
+            50% {
+                box-shadow: 0 0 0 8px var(--dark-secondary), 0 0 0 20px rgba(34, 197, 94, 0.3);
+            }
+        }
+
+        .commodity-expansion {
+            padding: 120px 0;
+            background: var(--dark-bg);
+        }
+
+        .commodity-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 32px;
+            margin: 60px 0;
+        }
+
+        .commodity-item {
+            background: var(--dark-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 32px;
+            text-align: center;
+            position: relative;
+            transition: all 0.4s ease;
+            overflow: hidden;
+        }
+
+        .commodity-item::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: radial-gradient(circle, rgba(34, 197, 94, 0.1), transparent);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: all 0.6s ease;
+        }
+
+        .commodity-item:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .commodity-item:hover {
+            transform: translateY(-8px);
+            border-color: var(--primary-color);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .commodity-icon {
+            width: 64px;
+            height: 64px;
+            background: var(--gradient-secondary);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 28px;
+            color: white;
+            transition: all 0.4s ease;
+        }
+
+        .commodity-item:hover .commodity-icon {
+            transform: scale(1.1) rotate(10deg);
+            box-shadow: 0 15px 30px rgba(59, 130, 246, 0.3);
+        }
+
+        .join-mission {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            padding: 120px 0;
+            text-align: center;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .join-mission::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><defs><pattern id="hexagon" width="50" height="43.4" patternUnits="userSpaceOnUse"><polygon points="25,0 50,14.4 50,28.9 25,43.4 0,28.9 0,14.4" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/></pattern></defs><rect width="1000" height="1000" fill="url(%23hexagon)"/></svg>');
+            opacity: 0.3;
+        }
+
+        .mission-buttons {
+            display: flex;
+            gap: 24px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 40px;
+        }
+
+        .mission-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 16px 32px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .mission-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.6);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .mission-btn.primary {
+            background: white;
+            color: var(--primary-color);
+            border-color: white;
+        }
+
+        .mission-btn.primary:hover {
+            background: rgba(255, 255, 255, 0.9);
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .vision-hero {
+                padding: 120px 0 80px;
+                min-height: 60vh;
+            }
+
+            .principles-grid {
+                grid-template-columns: 1fr;
+                gap: 24px;
+            }
+
+            .commodity-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 20px;
+            }
+
+            .roadmap-line {
+                left: 20px;
+            }
+
+            .roadmap-item {
+                margin: 60px 0;
+            }
+
+            .roadmap-item .roadmap-content {
+                margin-left: 60px !important;
+                margin-right: 0 !important;
+                text-align: left !important;
+            }
+
+            .roadmap-dot {
+                left: 20px;
+            }
+
+            .mission-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .commodity-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-oil-can"></i>
+                <span>AE</span>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="{% url "accounts:home" %}" class="nav-link">Home</a></li>
+                <li><a href="{% url "accounts:about" %}" class="nav-link">About</a></li>
+                <li><a href="{% url "accounts:revolution" %}" class="nav-link">The Revolution</a></li>
+                <li><a href="{% url "accounts:vision" %}" class="nav-link active">Vision</a></li>  
+                <li><a href="{% url "accounts:faq" %}" class="nav-link ">FAQ</a></li>
+            </ul>
+            <div class="nav-buttons">
+                <button class="btn btn-outline">Sign In</button>
+                <button class="btn btn-primary">Sign Up</button>
+                <div class="language-selector">
+                    <i class="fas fa-globe"></i>
+                    <span>EN</span>
+                </div>
+            </div>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Vision Hero -->
+    <section class="vision-hero">
+        <div class="container">
+            <div class="text-center">
+                <h1 style="font-size: clamp(3rem, 6vw, 5rem); font-weight: 900; margin-bottom: 32px; line-height: 1.1;">
+                    🌍 Powering the Future of <span class="highlight-text">Energy</span> Through Blockchain
+                </h1>
+                <p style="font-size: 22px; color: var(--text-secondary); max-width: 800px; margin: 0 auto 48px; line-height: 1.6;">
+                    We are redefining how the world trades crude oil — with speed, transparency, and trust, powered by blockchain technology.
+                </p>
+                <div style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; margin-bottom: 60px;">
+                    <button class="btn btn-primary btn-large">
+                        🔗 Join the Mission
+                    </button>
+                    <button class="btn btn-outline btn-large">
+                        📄 Read Our Whitepaper
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Mission Statement -->
+    <section class="mission-section">
+        <div class="container">
+            <div class="text-center" style="margin-bottom: 80px;">
+                <h2 style="font-size: clamp(2.5rem, 5vw, 3.5rem); font-weight: 800; margin-bottom: 32px;">
+                    📉 Why We Exist
+                </h2>
+                <div style="max-width: 900px; margin: 0 auto;">
+                    <h3 style="font-size: 24px; font-weight: 600; color: #ef4444; margin-bottom: 24px;">The Problem</h3>
+                    <p style="font-size: 20px; color: var(--text-secondary); line-height: 1.7; margin-bottom: 32px;">
+                        The global crude oil market — worth over $2.7 trillion — is still bound by slow, expensive, paper-based processes.
+                    </p>
+                    
+                    <h3 style="font-size: 24px; font-weight: 600; color: #f59e0b; margin-bottom: 24px;">🛠 The Result</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 24px; margin-bottom: 40px;">
+                        <div style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2); border-radius: 12px; padding: 20px;">
+                            <div style="color: #ef4444; font-weight: 600;">7–30 day settlement cycles</div>
+                        </div>
+                        <div style="background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.2); border-radius: 12px; padding: 20px;">
+                            <div style="color: #f59e0b; font-weight: 600;">Price inefficiencies and disputes</div>
+                        </div>
+                        <div style="background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.2); border-radius: 12px; padding: 20px;">
+                            <div style="color: #8b5cf6; font-weight: 600;">Heavy intermediary costs</div>
+                        </div>
+                        <div style="background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.2); border-radius: 12px; padding: 20px;">
+                            <div style="color: #3b82f6; font-weight: 600;">Limited access for small traders</div>
+                        </div>
+                    </div>
+                    
+                    <div style="background: var(--gradient-primary); padding: 32px; border-radius: 20px; color: white;">
+                        <h3 style="font-size: 24px; font-weight: 700; margin-bottom: 16px;">🚀 AE is building the future:</h3>
+                        <p style="font-size: 18px; opacity: 0.95;">
+                            A decentralized, transparent oil market where digital tokens replace paper, and trades settle in seconds, not weeks.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Core Principles -->
+    <section style="padding: 120px 0; background: var(--dark-secondary);">
+        <div class="container">
+            <div class="text-center" style="margin-bottom: 80px;">
+                <h2 style="font-size: clamp(2rem, 4vw, 2.5rem); font-weight: 700; margin-bottom: 24px;">
+                    🌟 Our Core Principles
+                </h2>
+                <p style="font-size: 18px; color: var(--text-secondary); max-width: 600px; margin: 0 auto;">
+                    The fundamental values that guide everything we do at AE Platform.
+                </p>
+            </div>
+            
+            <div class="principles-grid">
+                <div class="principle-card">
+                    <div class="principle-icon">
+                        🔗
+                    </div>
+                    <h3 style="font-size: 20px; font-weight: 600; margin-bottom: 16px;">Transparency</h3>
+                    <p style="color: var(--text-secondary); line-height: 1.6;">
+                        All trades are recorded immutably on blockchain — open, auditable, and verifiable by all stakeholders.
+                    </p>
+                </div>
+                
+                <div class="principle-card">
+                    <div class="principle-icon">
+                        ⚙️
+                    </div>
+                    <h3 style="font-size: 20px; font-weight: 600; margin-bottom: 16px;">Efficiency</h3>
+                    <p style="color: var(--text-secondary); line-height: 1.6;">
+                        Smart contracts settle trades instantly, removing delays and middlemen from the equation.
+                    </p>
+                </div>
+                
+                <div class="principle-card">
+                    <div class="principle-icon">
+                        🌍
+                    </div>
+                    <h3 style="font-size: 20px; font-weight: 600; margin-bottom: 16px;">Inclusion</h3>
+                    <p style="color: var(--text-secondary); line-height: 1.6;">
+                        Fractional ownership and open access bring institutional and retail players into the same global market.
+                    </p>
+                </div>
+                
+                <div class="principle-card">
+                    <div class="principle-icon">
+                        🌱
+                    </div>
+                    <h3 style="font-size: 20px; font-weight: 600; margin-bottom: 16px;">Sustainability</h3>
+                    <p style="color: var(--text-secondary); line-height: 1.6;">
+                        Each AE token can carry ESG and carbon data, helping the world transition to greener energy.
+                    </p>
+                </div>
+                
+                <div class="principle-card">
+                    <div class="principle-icon">
+                        🛡
+                    </div>
+                    <h3 style="font-size: 20px; font-weight: 600; margin-bottom: 16px;">Security</h3>
+                    <p style="color: var(--text-secondary); line-height: 1.6;">
+                        Built for institutions: secure custody, KYC/AML compliance, and audited smart contracts.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Long-term Vision -->
+    <section class="long-term-vision">
+        <div class="container">
+            <div class="text-center" style="margin-bottom: 80px;">
+                <h2 style="font-size: clamp(2rem, 4vw, 2.5rem); font-weight: 700; margin-bottom: 24px;">
+                    🌐 Our Long-Term Vision
+                </h2>
+                <p style="font-size: 20px; color: var(--text-secondary); max-width: 700px; margin: 0 auto;">
+                    📈 We're not stopping at crude oil. AE is laying the groundwork for a unified, tokenized commodity economy.
+                </p>
+            </div>
+            
+            <div class="vision-roadmap">
+                <div class="roadmap-timeline">
+                    <div class="roadmap-line"></div>
+                    
+                    <div class="roadmap-item">
+                        <div class="roadmap-dot"></div>
+                        <div class="roadmap-content">
+                            <h4 style="font-size: 22px; font-weight: 600; margin-bottom: 16px; color: var(--primary-color);">🛢 Crude Oil Foundation</h4>
+                            <p style="color: var(--text-secondary); line-height: 1.6;">
+                                Establishing the world's first large-scale oil tokenization platform with verified reserves and instant settlements.
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="roadmap-item">
+                        <div class="roadmap-dot"></div>
+                        <div class="roadmap-content">
+                            <h4 style="font-size: 22px; font-weight: 600; margin-bottom: 16px; color: var(--primary-color);">🔥 Natural Gas Expansion</h4>
+                            <p style="color: var(--text-secondary); line-height: 1.6;">
+                                Extending our platform to tokenize natural gas reserves, creating new liquidity pools for energy trading.
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="roadmap-item">
+                        <div class="roadmap-dot"></div>
+                        <div class="roadmap-content">
+                            <h4 style="font-size: 22px; font-weight: 600; margin-bottom: 16px; color: var(--primary-color);">⛽ Refined Fuels Integration</h4>
+                            <p style="color: var(--text-secondary); line-height: 1.6;">
+                                Adding gasoline, diesel, and other refined products to create a comprehensive energy commodity ecosystem.
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="roadmap-item">
+                        <div class="roadmap-dot"></div>
+                        <div class="roadmap-content">
+                            <h4 style="font-size: 22px; font-weight: 600; margin-bottom: 16px; color: var(--primary-color);">💡 Renewable Energy Credits</h4>
+                            <p style="color: var(--text-secondary); line-height: 1.6;">
+                                Tokenizing renewable energy certificates and carbon credits for complete ESG transparency.
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="roadmap-item">
+                        <div class="roadmap-dot"></div>
+                        <div class="roadmap-content">
+                            <h4 style="font-size: 22px; font-weight: 600; margin-bottom: 16px; color: var(--primary-color);">🧊 Global Commodity Network</h4>
+                            <p style="color: var(--text-secondary); line-height: 1.6;">
+                                Expanding to LNG, rare earth elements, and other critical commodities under one unified platform.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin-top: 60px;">
+                <div style="background: var(--dark-bg); border: 1px solid var(--border-color); border-radius: 20px; padding: 40px; max-width: 600px; margin: 0 auto;">
+                    <h3 style="font-size: 24px; font-weight: 700; margin-bottom: 16px; color: var(--primary-color);">Vision Statement:</h3>
+                    <p style="font-size: 18px; color: var(--text-secondary); line-height: 1.6; font-style: italic;">
+                        "AE will be the global digital infrastructure powering transparent, inclusive, and sustainable commodity markets — from the first barrel to the last kilowatt."
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Commodity Expansion -->
+    <section class="commodity-expansion">
+        <div class="container">
+            <div class="text-center" style="margin-bottom: 60px;">
+                <h2 style="font-size: clamp(2rem, 4vw, 2.5rem); font-weight: 700; margin-bottom: 24px;">
+                    Future Commodity Integration
+                </h2>
+                <p style="font-size: 18px; color: var(--text-secondary);">
+                    Building the infrastructure for a tokenized commodity economy.
+                </p>
+            </div>
+            
+            <div class="commodity-grid">
+                <div class="commodity-item">
+                    <div class="commodity-icon">🛢️</div>
+                    <h4 style="font-size: 18px; font-weight: 600; margin-bottom: 12px;">Crude Oil</h4>
+                    <p style="color: var(--text-secondary); font-size: 14px;">Primary focus with 1:1 tokenization</p>
+                </div>
+                
+                <div class="commodity-item">
+                    <div class="commodity-icon">🔥</div>
+                    <h4 style="font-size: 18px; font-weight: 600; margin-bottom: 12px;">Natural Gas</h4>
+                    <p style="color: var(--text-secondary); font-size: 14px;">Clean energy transition support</p>
+                </div>
+                
+                <div class="commodity-item">
+                    <div class="commodity-icon">⛽</div>
+                    <h4 style="font-size: 18px; font-weight: 600; margin-bottom: 12px;">Refined Fuels</h4>
+                    <p style="color: var(--text-secondary); font-size: 14px;">Gasoline, diesel, jet fuel markets</p>
+                </div>
+                
+                <div class="commodity-item">
+                    <div class="commodity-icon">💡</div>
+                    <h4 style="font-size: 18px; font-weight: 600; margin-bottom: 12px;">Renewable Credits</h4>
+                    <p style="color: var(--text-secondary); font-size: 14px;">ESG and carbon offset trading</p>
+                </div>
+                
+                <div class="commodity-item">
+                    <div class="commodity-icon">🧊</div>
+                    <h4 style="font-size: 18px; font-weight: 600; margin-bottom: 12px;">LNG</h4>
+                    <p style="color: var(--text-secondary); font-size: 14px;">Liquefied natural gas markets</p>
+                </div>
+                
+                <div class="commodity-item">
+                    <div class="commodity-icon">⚡</div>
+                    <h4 style="font-size: 18px; font-weight: 600; margin-bottom: 12px;">Rare Commodities</h4>
+                    <p style="color: var(--text-secondary); font-size: 14px;">Critical materials and minerals</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Join Mission -->
+    <section class="join-mission">
+        <div class="container">
+            <h2 style="font-size: clamp(2.5rem, 5vw, 3.5rem); font-weight: 800; margin-bottom: 24px;">
+                🤝 Join the Mission
+            </h2>
+            <p style="font-size: 20px; opacity: 0.9; margin-bottom: 32px; max-width: 600px; margin-left: auto; margin-right: auto;">
+                🚀 Be part of the next global transformation in energy trading.
+            </p>
+            
+            <div class="mission-buttons">
+                <a href="#" class="mission-btn primary">
+                    🔗 Apply as Institutional Partner
+                </a>
+                <a href="#" class="mission-btn">
+                    🪙 Participate in Token Launch
+                </a>
+                <a href="#" class="mission-btn">
+                    💬 Join Our Global Community
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Future Impact -->
+    <section style="padding: 100px 0; background: var(--dark-bg);">
+        <div class="container">
+            <div class="text-center" style="margin-bottom: 60px;">
+                <h2 style="font-size: clamp(2rem, 4vw, 2.5rem); font-weight: 700; margin-bottom: 24px;">
+                    The Future We're Building
+                </h2>
+                <p style="font-size: 18px; color: var(--text-secondary); max-width: 700px; margin: 0 auto;">
+                    AE's vision extends beyond technology — we're creating a more equitable and sustainable energy economy.
+                </p>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px;">
+                <div style="background: var(--dark-secondary); border: 1px solid var(--border-color); border-radius: 20px; padding: 40px; text-align: center;">
+                    <div style="width: 80px; height: 80px; background: var(--gradient-primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 24px; font-size: 32px;">
+                        🌍
+                    </div>
+                    <h4 style="font-size: 20px; font-weight: 600; margin-bottom: 16px;">Global Accessibility</h4>
+                    <p style="color: var(--text-secondary); line-height: 1.6;">
+                        Making energy markets accessible to everyone, regardless of geography or capital size, democratizing global energy trading.
+                    </p>
+                </div>
+                
+                <div style="background: var(--dark-secondary); border: 1px solid var(--border-color); border-radius: 20px; padding: 40px; text-align: center;">
+                    <div style="width: 80px; height: 80px; background: var(--gradient-secondary); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 24px; font-size: 32px;">
+                        🔄
+                    </div>
+                    <h4 style="font-size: 20px; font-weight: 600; margin-bottom: 16px;">Sustainable Innovation</h4>
+                    <p style="color: var(--text-secondary); line-height: 1.6;">
+                        Embedding ESG data into every transaction, supporting the transition to cleaner energy sources and carbon accountability.
+                    </p>
+                </div>
+                
+                <div style="background: var(--dark-secondary); border: 1px solid var(--border-color); border-radius: 20px; padding: 40px; text-align: center;">
+                    <div style="width: 80px; height: 80px; background: linear-gradient(135deg, #8b5cf6, #a855f7); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 24px; font-size: 32px;">
+                        ⚡
+                    </div>
+                    <h4 style="font-size: 20px; font-weight: 600; margin-bottom: 16px;">Economic Efficiency</h4>
+                    <p style="color: var(--text-secondary); line-height: 1.6;">
+                        Reducing transaction costs, eliminating inefficiencies, and creating new value streams through programmable energy assets.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-logo">
+                        <i class="fas fa-oil-can"></i>
+                        <span>AE</span>
+                    </div>
+                    <p>Decentralizing Energy. Empowering the World.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-telegram"></i></a>
+                        <a href="#"><i class="fab fa-discord"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h4>Platform</h4>
+                    <ul>
+                        <li><a href="#">Demo Account</a></li>
+                        <li><a href="#">Live Trading</a></li>
+                        <li><a href="#">Mobile App</a></li>
+                        <li><a href="#">API Documentation</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="#">Whitepaper</a></li>
+                        <li><a href="#">Educational Center</a></li>
+                        <li><a href="#">Market Analysis</a></li>
+                        <li><a href="#">Support Center</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Legal</h4>
+                    <ul>
+                        <li><a href="terms.html">Terms of Service</a></li>
+                        <li><a href="privacy.html">Privacy Policy</a></li>
+                        <li><a href="disclosure.html">Risk Disclosure</a></li>
+                        <li><a href="#">Compliance</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 AE Platform. All rights reserved.</p>
+                <div class="footer-links">
+                    <a href="privacy.html">Privacy</a>
+                    <a href="terms.html">Terms</a>
+                    <a href="#">Cookies</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <script src="{% static 'script.js'%}"></script>
+</body>
+</html>

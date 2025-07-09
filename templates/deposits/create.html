@@ -1,0 +1,705 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Make Deposit - Crypto Platform{% endblock %}
+
+{% block content %}
+<div class="deposit-container">
+    <!-- Header Section -->
+    <div class="deposit-header">
+        <div class="header-content">
+            <div class="header-icon">
+                <i class="fas fa-plus-circle"></i>
+            </div>
+            <div class="header-text">
+                <h1 class="page-title">Make a Deposit</h1>
+                <p class="page-subtitle">Add funds to your crypto portfolio</p>
+            </div>
+        </div>
+        <div class="header-actions">
+            <a href="{% url 'deposits:deposit_list' %}" class="btn btn-outline">
+                <i class="fas fa-history"></i>
+                View History
+            </a>
+        </div>
+    </div>
+
+    <div class="deposit-content">
+        <!-- Main Deposit Form -->
+        <div class="form-section">
+            <div class="content-card">
+                <div class="card-header">
+                    <h2 class="card-title">Deposit Form</h2>
+                    <div class="security-badge">
+                        <i class="fas fa-shield-alt"></i>
+                        Secure Transaction
+                    </div>
+                </div>
+                
+                <div class="card-content">
+                    <form method="post" class="deposit-form">
+                        {% csrf_token %}
+                        
+                        <div class="form-grid">
+                            <!-- Cryptocurrency Selection -->
+                            <div class="form-group full-width">
+                                <label class="form-label">
+                                    <i class="fas fa-coins"></i>
+                                    Select Cryptocurrency
+                                </label>
+                                <div class="form-field">
+                                    {{ form.cryptocurrency }}
+                                </div>
+                                {% if form.cryptocurrency.help_text %}
+                                <div class="field-help">{{ form.cryptocurrency.help_text }}</div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Amount Input -->
+                            <div class="form-group half-width">
+                                <label class="form-label">
+                                    <i class="fas fa-dollar-sign"></i>
+                                    Deposit Amount (USD)
+                                </label>
+                                <div class="form-field">
+                                    {{ form.amount }}
+                                </div>
+                                {% if form.amount.help_text %}
+                                <div class="field-help">{{ form.amount.help_text }}</div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Transaction Hash -->
+                            <div class="form-group half-width">
+                                <label class="form-label">
+                                    <i class="fas fa-hashtag"></i>
+                                    Transaction Hash
+                                </label>
+                                <div class="form-field">
+                                    {{ form.transaction_hash }}
+                                </div>
+                                {% if form.transaction_hash.help_text %}
+                                <div class="field-help">{{ form.transaction_hash.help_text }}</div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Wallet Address (if exists) -->
+                            {% if form.wallet_address %}
+                            <div class="form-group full-width">
+                                <label class="form-label">
+                                    <i class="fas fa-wallet"></i>
+                                    Wallet Address
+                                </label>
+                                <div class="form-field">
+                                    {{ form.wallet_address }}
+                                </div>
+                                {% if form.wallet_address.help_text %}
+                                <div class="field-help">{{ form.wallet_address.help_text }}</div>
+                                {% endif %}
+                            </div>
+                            {% endif %}
+
+                            <!-- Notes/Comments -->
+                            {% if form.notes %}
+                            <div class="form-group full-width">
+                                <label class="form-label">
+                                    <i class="fas fa-sticky-note"></i>
+                                    Additional Notes (Optional)
+                                </label>
+                                <div class="form-field">
+                                    {{ form.notes }}
+                                </div>
+                                {% if form.notes.help_text %}
+                                <div class="field-help">{{ form.notes.help_text }}</div>
+                                {% endif %}
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Form Actions -->
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-paper-plane"></i>
+                                Submit Deposit Request
+                            </button>
+                            <a href="{% url 'deposits:deposit_list' %}" class="btn btn-secondary">
+                                <i class="fas fa-times"></i>
+                                Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Instructions & Information -->
+        <div class="info-section">
+            <!-- Deposit Instructions -->
+            <div class="content-card">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <i class="fas fa-list-ol"></i>
+                        Deposit Instructions
+                    </h2>
+                </div>
+                <div class="card-content">
+                    <div class="instruction-steps">
+                        <div class="step-item">
+                            <div class="step-number">1</div>
+                            <div class="step-content">
+                                <h4>Choose Cryptocurrency</h4>
+                                <p>Select the cryptocurrency you want to purchase from the dropdown menu</p>
+                            </div>
+                        </div>
+                        <div class="step-item">
+                            <div class="step-number">2</div>
+                            <div class="step-content">
+                                <h4>Enter Amount</h4>
+                                <p>Specify the USD amount you want to deposit into your account</p>
+                            </div>
+                        </div>
+                        <div class="step-item">
+                            <div class="step-number">3</div>
+                            <div class="step-content">
+                                <h4>Send USDT</h4>
+                                <p>Transfer USDT to our provided wallet address</p>
+                            </div>
+                        </div>
+                        <div class="step-item">
+                            <div class="step-number">4</div>
+                            <div class="step-content">
+                                <h4>Copy Transaction Hash</h4>
+                                <p>After sending, copy the transaction hash and paste it in the form</p>
+                            </div>
+                        </div>
+                        <div class="step-item">
+                            <div class="step-number">5</div>
+                            <div class="step-content">
+                                <h4>Submit & Wait</h4>
+                                <p>Submit your request and wait for admin approval</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Important Information -->
+            <div class="content-card">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <i class="fas fa-info-circle"></i>
+                        Important Information
+                    </h2>
+                </div>
+                <div class="card-content">
+                    <div class="info-alerts">
+                        <div class="alert alert-info">
+                            <div class="alert-icon">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div class="alert-content">
+                                <h4>Processing Time</h4>
+                                <p>All deposits are processed manually. You will receive your coins after admin approval, typically within 24 hours.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="alert alert-warning">
+                            <div class="alert-icon">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </div>
+                            <div class="alert-content">
+                                <h4>Minimum Deposit</h4>
+                                <p>Minimum deposit amount is $10 USD. Smaller amounts may not be processed.</p>
+                            </div>
+                        </div>
+
+                        <div class="alert alert-success">
+                            <div class="alert-icon">
+                                <i class="fas fa-shield-alt"></i>
+                            </div>
+                            <div class="alert-content">
+                                <h4>Security Guarantee</h4>
+                                <p>Your funds are secured with industry-standard encryption and multi-signature wallets.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Support -->
+            <div class="content-card">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <i class="fas fa-headset"></i>
+                        Need Help?
+                    </h2>
+                </div>
+                <div class="card-content">
+                    <div class="support-options">
+                        <div class="support-item">
+                            <div class="support-icon">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <div class="support-content">
+                                <h4>Email Support</h4>
+                                <p>support@cryptoplatform.com</p>
+                            </div>
+                        </div>
+                        <div class="support-item">
+                            <div class="support-icon">
+                                <i class="fas fa-comments"></i>
+                            </div>
+                            <div class="support-content">
+                                <h4>Live Chat</h4>
+                                <p>Available 24/7 for assistance</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.form-field select {
+    color: #000000 !important;
+}
+
+.form-field select option {
+    color: #000000 !important;
+}
+.form-field input {
+    color: #000000 !important;
+}
+.deposit-container {
+    padding: 24px;
+    background: #f8fafc;
+    min-height: 100vh;
+}
+
+.deposit-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 32px;
+    padding: 24px;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e2e8f0;
+}
+
+.header-content {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.header-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    color: white;
+}
+
+.header-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.page-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: #1e293b;
+    margin: 0;
+}
+
+.page-subtitle {
+    font-size: 16px;
+    color: #64748b;
+    margin: 4px 0 0;
+}
+
+.header-actions {
+    display: flex;
+    gap: 12px;
+}
+
+.btn {
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.btn-secondary {
+    background: #64748b;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background: #475569;
+}
+
+.btn-outline {
+    background: white;
+    color: #64748b;
+    border: 1px solid #e2e8f0;
+}
+
+.btn-outline:hover {
+    background: #f8fafc;
+    border-color: #cbd5e1;
+}
+
+.deposit-content {
+    display: grid;
+    grid-template-columns: 1fr 400px;
+    gap: 24px;
+}
+
+.content-card {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e2e8f0;
+    overflow: hidden;
+    margin-bottom: 24px;
+}
+
+.card-header {
+    padding: 24px;
+    border-bottom: 1px solid #e2e8f0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.card-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #1e293b;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.security-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background: #dcfce7;
+    color: #16a34a;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.card-content {
+    padding: 24px;
+}
+
+.deposit-form {
+    width: 100%;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-bottom: 32px;
+}
+
+.form-group.full-width {
+    grid-column: 1 / -1;
+}
+
+.form-group.half-width {
+    grid-column: span 1;
+}
+
+.form-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 8px;
+}
+
+.form-field {
+    position: relative;
+}
+
+.form-field input,
+.form-field select,
+.form-field textarea {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: all 0.2s ease;
+    background: white;
+}
+
+.form-field input:focus,
+.form-field select:focus,
+.form-field textarea:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.form-field textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+.field-help {
+    font-size: 12px;
+    color: #6b7280;
+    margin-top: 4px;
+}
+
+.form-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-start;
+}
+
+.instruction-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.step-item {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+}
+
+.step-number {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 600;
+    flex-shrink: 0;
+}
+
+.step-content h4 {
+    font-size: 16px;
+    font-weight: 600;
+    color: #1e293b;
+    margin: 0 0 4px;
+}
+
+.step-content p {
+    font-size: 14px;
+    color: #64748b;
+    margin: 0;
+    line-height: 1.5;
+}
+
+.info-alerts {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.alert {
+    display: flex;
+    gap: 12px;
+    padding: 16px;
+    border-radius: 8px;
+    border-left: 4px solid;
+}
+
+.alert-info {
+    background: #eff6ff;
+    border-left-color: #3b82f6;
+}
+
+.alert-warning {
+    background: #fffbeb;
+    border-left-color: #f59e0b;
+}
+
+.alert-success {
+    background: #f0fdf4;
+    border-left-color: #10b981;
+}
+
+.alert-icon {
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.alert-info .alert-icon {
+    color: #3b82f6;
+}
+
+.alert-warning .alert-icon {
+    color: #f59e0b;
+}
+
+.alert-success .alert-icon {
+    color: #10b981;
+}
+
+.alert-content h4 {
+    font-size: 14px;
+    font-weight: 600;
+    margin: 0 0 4px;
+}
+
+.alert-info .alert-content h4 {
+    color: #1e40af;
+}
+
+.alert-warning .alert-content h4 {
+    color: #92400e;
+}
+
+.alert-success .alert-content h4 {
+    color: #047857;
+}
+
+.alert-content p {
+    font-size: 13px;
+    margin: 0;
+    line-height: 1.4;
+}
+
+.alert-info .alert-content p {
+    color: #1e40af;
+}
+
+.alert-warning .alert-content p {
+    color: #92400e;
+}
+
+.alert-success .alert-content p {
+    color: #047857;
+}
+
+.support-options {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.support-item {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    padding: 16px;
+    background: #f8fafc;
+    border-radius: 8px;
+}
+
+.support-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    color: white;
+}
+
+.support-content h4 {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1e293b;
+    margin: 0 0 2px;
+}
+
+.support-content p {
+    font-size: 13px;
+    color: #64748b;
+    margin: 0;
+}
+
+@media (max-width: 1024px) {
+    .deposit-content {
+        grid-template-columns: 1fr;
+    }
+    
+    .info-section {
+        order: -1;
+    }
+}
+
+@media (max-width: 768px) {
+    .deposit-container {
+        padding: 16px;
+    }
+    
+    .deposit-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+    
+    .page-title {
+        font-size: 24px;
+    }
+    
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .form-group.half-width {
+        grid-column: 1;
+    }
+    
+    .form-actions {
+        flex-direction: column;
+    }
+    
+    .btn {
+        justify-content: center;
+    }
+}
+</style>
+{% endblock %}

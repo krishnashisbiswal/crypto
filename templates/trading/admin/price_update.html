@@ -1,0 +1,883 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Update {{ crypto.symbol }} Price - Admin{% endblock %}
+
+{% block content %}
+<div class="price-update-container">
+    <!-- Header Section -->
+    <div class="page-header">
+        <div class="header-content">
+            <div class="header-icon">
+                <i class="fas fa-edit"></i>
+            </div>
+            <div class="header-text">
+                <h1 class="page-title gradient-text">Update Price</h1>
+                <p class="page-subtitle">Modify {{ crypto.name }} ({{ crypto.symbol }}) pricing</p>
+            </div>
+        </div>
+        <div class="header-actions">
+            <a href="{% url 'trading:admin_crypto_list' %}" class="btn btn-outline">
+                <i class="fas fa-arrow-left"></i>
+                Back to List
+            </a>
+        </div>
+    </div>
+
+    <!-- Current Price Display -->
+    <div class="current-price-card">
+        <div class="crypto-info">
+            <div class="crypto-avatar">
+                <i class="fab fa-bitcoin"></i>
+            </div>
+            <div class="crypto-details">
+                <div class="crypto-name">{{ crypto.name }}</div>
+                <div class="crypto-symbol">{{ crypto.symbol }}</div>
+            </div>
+        </div>
+        <div class="price-display">
+            <div class="price-label">Current Price</div>
+            <div class="price-value">${{ crypto.current_price|floatformat:8 }}</div>
+            <div class="price-note">USD per {{ crypto.symbol }}</div>
+        </div>
+        <div class="market-info">
+            <div class="market-item">
+                <span class="market-label">24h Change</span>
+                <span class="market-value {% if crypto.price_change_24h >= 0 %}positive{% else %}negative{% endif %}">
+                    <i class="fas fa-arrow-{% if crypto.price_change_24h >= 0 %}up{% else %}down{% endif %}"></i>
+                    {{ crypto.price_change_24h|floatformat:2 }}%
+                </span>
+            </div>
+            <div class="market-item">
+                <span class="market-label">Status</span>
+                <span class="status-badge {% if crypto.is_active %}active{% else %}inactive{% endif %}">
+                    {% if crypto.is_active %}Active{% else %}Inactive{% endif %}
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content Grid -->
+    <div class="content-grid">
+        <!-- Price Update Form -->
+        <div class="form-section">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title">
+                        <i class="fas fa-calculator"></i>
+                        Price Update Form
+                    </h5>
+                    <div class="security-badge">
+                        <i class="fas fa-shield-alt"></i>
+                        Admin Only
+                    </div>
+                </div>
+                
+                <div class="card-body">
+                    <form method="post" class="price-update-form">
+                        {% csrf_token %}
+                        
+                        <!-- Update Method Selection -->
+                        <div class="form-group">
+                            <label class="form-label">
+                                <i class="fas fa-cog"></i>
+                                Update Method
+                            </label>
+                            <div class="radio-group">
+                                <div class="radio-option">
+                                    <input class="form-check-input" type="radio" name="update_type" value="percentage" id="percentage" checked>
+                                    <label class="radio-label" for="percentage">
+                                        <div class="radio-icon">
+                                            <i class="fas fa-percentage"></i>
+                                        </div>
+                                        <div class="radio-content">
+                                            <div class="radio-title">Percentage Change</div>
+                                            <div class="radio-desc">Increase or decrease by percentage</div>
+                                        </div>
+                                    </label>
+                                </div>
+                                <div class="radio-option">
+                                    <input class="form-check-input" type="radio" name="update_type" value="direct" id="direct">
+                                    <label class="radio-label" for="direct">
+                                        <div class="radio-icon">
+                                            <i class="fas fa-dollar-sign"></i>
+                                        </div>
+                                        <div class="radio-content">
+                                            <div class="radio-title">Direct Price Entry</div>
+                                            <div class="radio-desc">Set exact price value</div>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Percentage Input -->
+                        <div id="percentage-input" class="form-group">
+                            <label for="id_percentage" class="form-label">
+                                <i class="fas fa-chart-line"></i>
+                                Percentage Change (%)
+                            </label>
+                            <div class="input-with-examples">
+                                <input type="number" step="0.01" class="form-control" name="percentage" id="id_percentage" placeholder="e.g., 5.5 or -3.2">
+                                <div class="input-examples">
+                                    <span class="example positive" onclick="setPercentage(5)">+5%</span>
+                                    <span class="example negative" onclick="setPercentage(-3)">-3%</span>
+                                    <span class="example positive" onclick="setPercentage(10)">+10%</span>
+                                    <span class="example negative" onclick="setPercentage(-5)">-5%</span>
+                                </div>
+                            </div>
+                            <div class="field-help">
+                                <i class="fas fa-info-circle"></i>
+                                Enter positive for increase, negative for decrease
+                            </div>
+                        </div>
+
+                        <!-- Direct Price Input -->
+                        <div id="direct-input" class="form-group" style="display: none;">
+                            <label for="id_new_price" class="form-label">
+                                <i class="fas fa-dollar-sign"></i>
+                                New Price (USD)
+                            </label>
+                            <div class="price-input-group">
+                                <span class="currency-symbol">$</span>
+                                <input type="number" step="0.00000001" class="form-control price-input" name="new_price" id="id_new_price" placeholder="46000.50">
+                            </div>
+                            <div class="field-help">
+                                <i class="fas fa-info-circle"></i>
+                                Enter the exact price in USD
+                            </div>
+                        </div>
+
+                        <!-- Price Preview -->
+                        <div class="price-preview" id="pricePreview" style="display: none;">
+                            <div class="preview-header">
+                                <i class="fas fa-eye"></i>
+                                Price Preview
+                            </div>
+                            <div class="preview-content">
+                                <div class="preview-row">
+                                    <span>Current Price:</span>
+                                    <span id="currentPricePreview">${{ crypto.current_price|floatformat:8 }}</span>
+                                </div>
+                                <div class="preview-row">
+                                    <span>New Price:</span>
+                                    <span id="newPricePreview" class="new-price">-</span>
+                                </div>
+                                <div class="preview-row">
+                                    <span>Change:</span>
+                                    <span id="changePreview" class="change-amount">-</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Form Actions -->
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i>
+                                Update Price
+                            </button>
+                            <a href="{% url 'trading:admin_crypto_list' %}" class="btn btn-secondary">
+                                <i class="fas fa-times"></i>
+                                Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Information Panel -->
+        <div class="info-section">
+    <!-- Price History -->
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title">
+                    <i class="fas fa-history"></i>
+                    Recent Updates
+                </h5>
+            </div>
+            <div class="card-body">
+                {% for item in price_history %}
+                    <div class="history-item">
+                        <div class="history-time">{{ item.timestamp|timesince }} ago</div>
+                        <div class="history-change {% if item.change > 0 %}positive{% elif item.change < 0 %}negative{% endif %}">
+                            {% if item.change is not None %}
+                                {% if item.change > 0 %}
+                                    +{{ item.change|floatformat:1 }}%
+                                {% else %}
+                                    {{ item.change|floatformat:1 }}%
+                                {% endif %}
+                            {% else %}
+                                —
+                            {% endif %}
+                        </div>
+                        <div class="history-price">
+                            ${{ item.price|floatformat:2 }}
+                        </div>
+                    </div>
+                {% empty %}
+                    <div class="history-item">No price history available.</div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+
+            <!-- Important Notes -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        Important Notes
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-warning">
+                        <div class="alert-content">
+                            <i class="fas fa-bell"></i>
+                            <div>
+                                <h6>Price Impact</h6>
+                                <p>Price changes will be reflected immediately for all users and may affect ongoing transactions.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="alert alert-info">
+                        <div class="alert-content">
+                            <i class="fas fa-users"></i>
+                            <div>
+                                <h6>User Impact</h6>
+                                <p>All portfolio values and pending orders will be recalculated based on the new price.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title">
+                        <i class="fas fa-bolt"></i>
+                        Quick Actions
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="quick-actions">
+                        <button class="quick-action-btn" onclick="fetchMarketPrice()">
+                            <i class="fas fa-sync-alt"></i>
+                            <span>Fetch Market Price</span>
+                        </button>
+                        <button class="quick-action-btn" onclick="viewPriceChart()">
+                            <i class="fas fa-chart-area"></i>
+                            <span>View Price Chart</span>
+                        </button>
+                        <button class="quick-action-btn" onclick="toggleCryptoStatus()">
+                            <i class="fas fa-power-off"></i>
+                            <span>Toggle Status</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+/* Price Update Page Styles */
+.price-update-container {
+    padding: 24px;
+    min-height: 100vh;
+}
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 32px;
+    padding: 24px;
+    background: var(--white-bg);
+    border-radius: 16px;
+    box-shadow: var(--shadow-light);
+    border: 1px solid var(--border-color);
+}
+
+.header-content {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.header-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 16px;
+    background: var(--primary-gradient);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    color: white;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.header-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.page-subtitle {
+    font-size: 16px;
+    color: var(--text-secondary);
+    margin: 4px 0 0;
+}
+
+.header-actions {
+    display: flex;
+    gap: 12px;
+}
+
+/* Current Price Card */
+.current-price-card {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 24px;
+    align-items: center;
+    padding: 24px;
+    background: var(--white-bg);
+    border-radius: 16px;
+    box-shadow: var(--shadow-light);
+    border: 1px solid var(--border-color);
+    margin-bottom: 32px;
+}
+
+.crypto-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.crypto-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #f7931a 0%, #ff9500 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 20px;
+}
+
+.crypto-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.crypto-name {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.crypto-symbol {
+    font-size: 14px;
+    color: var(--text-secondary);
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+.price-display {
+    text-align: center;
+}
+
+.price-label {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-bottom: 4px;
+}
+
+.price-value {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+}
+
+.price-note {
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.market-info {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.market-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.market-label {
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+.market-value {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.market-value.positive {
+    color: #16a34a;
+}
+
+.market-value.negative {
+    color: #dc2626;
+}
+
+.status-badge {
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.status-badge.active {
+    background: rgba(16, 185, 129, 0.1);
+    color: #065f46;
+}
+
+.status-badge.inactive {
+    background: rgba(239, 68, 68, 0.1);
+    color: #991b1b;
+}
+
+/* Content Grid */
+.content-grid {
+    display: grid;
+    grid-template-columns: 1fr 400px;
+    gap: 24px;
+}
+
+/* Form Styling */
+.security-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    background: rgba(245, 158, 11, 0.1);
+    color: #92400e;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+    border: 1px solid rgba(245, 158, 11, 0.2);
+}
+
+.price-update-form {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.form-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.radio-group {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.radio-option {
+    position: relative;
+}
+
+.radio-option input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.radio-label {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: var(--white-bg);
+}
+
+.radio-option input[type="radio"]:checked + .radio-label {
+    border-color: rgba(102, 126, 234, 0.5);
+    background: rgba(102, 126, 234, 0.05);
+}
+
+.radio-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: var(--light-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-secondary);
+    transition: all 0.3s ease;
+}
+
+.radio-option input[type="radio"]:checked + .radio-label .radio-icon {
+    background: var(--primary-gradient);
+    color: white;
+}
+
+.radio-content {
+    flex: 1;
+}
+
+.radio-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 2px;
+}
+
+.radio-desc {
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+.input-with-examples {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.input-examples {
+    display: flex;
+    gap: 8px;
+}
+
+.example {
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.example.positive {
+    background: rgba(16, 185, 129, 0.1);
+    color: #065f46;
+}
+
+.example.negative {
+    background: rgba(239, 68, 68, 0.1);
+    color: #991b1b;
+}
+
+.example:hover {
+    opacity: 0.8;
+    transform: scale(1.05);
+}
+
+.price-input-group {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.currency-symbol {
+    position: absolute;
+    left: 12px;
+    color: var(--text-secondary);
+    font-weight: 600;
+    z-index: 1;
+}
+
+.price-input {
+    padding-left: 32px !important;
+}
+
+.field-help {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+/* Price Preview */
+.price-preview {
+    padding: 16px;
+    background: var(--light-bg);
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+}
+
+.preview-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 12px;
+}
+
+.preview-content {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.preview-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+}
+
+.new-price {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.change-amount.positive {
+    color: #16a34a;
+}
+
+.change-amount.negative {
+    color: #dc2626;
+}
+
+.form-actions {
+    display: flex;
+    gap: 12px;
+    padding-top: 8px;
+}
+
+/* History and Info Cards */
+.history-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    background: var(--light-bg);
+    border-radius: 8px;
+    margin-bottom: 8px;
+}
+
+.history-time {
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+.history-change {
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.history-change.positive {
+    color: #16a34a;
+}
+
+.history-change.negative {
+    color: #dc2626;
+}
+
+.history-price {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+/* Alert Styling */
+.alert {
+    display: flex;
+    gap: 12px;
+    padding: 16px;
+    border-radius: 12px;
+    border-left: 4px solid;
+    margin-bottom: 16px;
+}
+
+.alert-content {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+}
+
+.alert-content h6 {
+    margin: 0 0 4px;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.alert-content p {
+    margin: 0;
+    font-size: 13px;
+}
+
+/* Quick Actions */
+.quick-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.quick-action-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    background: var(--light-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: left;
+    color: var(--text-primary);
+}
+
+.quick-action-btn:hover {
+    background: var(--white-bg);
+    border-color: rgba(102, 126, 234, 0.3);
+}
+
+@media (max-width: 1024px) {
+    .content-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .current-price-card {
+        grid-template-columns: 1fr;
+        text-align: center;
+        gap: 16px;
+    }
+}
+
+@media (max-width: 768px) {
+    .price-update-container {
+        padding: 16px;
+    }
+    
+    .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+    
+    .current-price-card {
+        padding: 16px;
+    }
+    
+    .form-actions {
+        flex-direction: column;
+    }
+}
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const percentageRadio = document.getElementById('percentage');
+    const directRadio = document.getElementById('direct');
+    const percentageInput = document.getElementById('percentage-input');
+    const directInput = document.getElementById('direct-input');
+    const pricePreview = document.getElementById('pricePreview');
+    const currentPrice = {{ crypto.current_price }};
+
+    function toggleInputs() {
+        if (percentageRadio.checked) {
+            percentageInput.style.display = 'block';
+            directInput.style.display = 'none';
+        } else {
+            percentageInput.style.display = 'none';
+            directInput.style.display = 'block';
+        }
+        updatePreview();
+    }
+
+    function updatePreview() {
+        const percentageValue = document.getElementById('id_percentage').value;
+        const directValue = document.getElementById('id_new_price').value;
+        
+        let newPrice = null;
+        let change = null;
+        
+        if (percentageRadio.checked && percentageValue) {
+            const changeAmount = (currentPrice * parseFloat(percentageValue)) / 100;
+            newPrice = currentPrice + changeAmount;
+            change = changeAmount;
+        } else if (directRadio.checked && directValue) {
+            newPrice = parseFloat(directValue);
+            change = newPrice - currentPrice;
+        }
+        
+        if (newPrice !== null) {
+            pricePreview.style.display = 'block';
+            document.getElementById('newPricePreview').textContent = '$' + newPrice.toFixed(8);
+            
+            const changeElement = document.getElementById('changePreview');
+            const changePercent = ((change / currentPrice) * 100).toFixed(2);
+            changeElement.textContent = (change >= 0 ? '+' : '') + '$' + change.toFixed(8) + ' (' + (change >= 0 ? '+' : '') + changePercent + '%)';
+            changeElement.className = 'change-amount ' + (change >= 0 ? 'positive' : 'negative');
+        } else {
+            pricePreview.style.display = 'none';
+        }
+    }
+
+    percentageRadio.addEventListener('change', toggleInputs);
+    directRadio.addEventListener('change', toggleInputs);
+    
+    document.getElementById('id_percentage').addEventListener('input', updatePreview);
+    document.getElementById('id_new_price').addEventListener('input', updatePreview);
+    
+    // Initialize
+    toggleInputs();
+});
+
+function setPercentage(value) {
+    document.getElementById('id_percentage').value = value;
+    document.getElementById('percentage').checked = true;
+    document.getElementById('percentage-input').style.display = 'block';
+    document.getElementById('direct-input').style.display = 'none';
+    document.dispatchEvent(new Event('input', { target: document.getElementById('id_percentage') }));
+}
+
+function fetchMarketPrice() {
+    alert('Fetch market price functionality would be implemented here');
+}
+
+function viewPriceChart() {
+    alert('Price chart view would be implemented here');
+}
+
+function toggleCryptoStatus() {
+    alert('Toggle cryptocurrency status would be implemented here');
+}
+</script>
+{% endblock %}

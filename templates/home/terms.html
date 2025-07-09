@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terms & Services - AE Platform Legal Terms</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css'%}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Extra CSS for Terms Page -->
+    <style>
+        .legal-hero {
+            background: linear-gradient(135deg, var(--dark-bg) 0%, var(--dark-secondary) 100%);
+            padding: 140px 0 80px;
+            text-align: center;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .legal-content {
+            padding: 80px 0;
+            background: var(--dark-bg);
+        }
+
+        .legal-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: var(--dark-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 60px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .legal-section {
+            margin-bottom: 40px;
+        }
+
+        .legal-section h2 {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid rgba(34, 197, 94, 0.2);
+        }
+
+        .legal-section h3 {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 24px 0 16px 0;
+        }
+
+        .legal-section p {
+            color: var(--text-secondary);
+            line-height: 1.7;
+            margin-bottom: 16px;
+        }
+
+        .legal-section ul {
+            color: var(--text-secondary);
+            line-height: 1.7;
+            margin: 16px 0 16px 20px;
+        }
+
+        .legal-section li {
+            margin-bottom: 8px;
+        }
+
+        .highlight-text {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .warning-box {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 24px 0;
+        }
+
+        .warning-box h4 {
+            color: #ef4444;
+            font-weight: 600;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .info-box {
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 24px 0;
+        }
+
+        .info-box h4 {
+            color: var(--primary-color);
+            font-weight: 600;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .effective-date {
+            background: var(--dark-tertiary);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .table-of-contents {
+            background: var(--dark-tertiary);
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 40px;
+        }
+
+        .table-of-contents h3 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            font-size: 20px;
+        }
+
+        .table-of-contents ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .table-of-contents li {
+            margin-bottom: 8px;
+        }
+
+        .table-of-contents a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.3s ease;
+            display: block;
+            padding: 8px 12px;
+            border-radius: 8px;
+        }
+
+        .table-of-contents a:hover {
+            color: var(--primary-color);
+            background: rgba(34, 197, 94, 0.1);
+        }
+
+        @media (max-width: 768px) {
+            .legal-hero {
+                padding: 120px 0 60px;
+            }
+
+            .legal-container {
+                padding: 40px 24px;
+                margin: 0 16px;
+            }
+
+            .table-of-contents {
+                padding: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-oil-can"></i>
+                <span>AE</span>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="{% url "accounts:home" %}" class="nav-link">Home</a></li>
+                <li><a href="{% url "accounts:about" %}" class="nav-link">About</a></li>
+                <li><a href="{% url "accounts:revolution" %}" class="nav-link">The Revolution</a></li>
+                <li><a href="{% url "accounts:vision" %}" class="nav-link">Vision</a></li>  
+                <li><a href="{% url "accounts:faq" %}" class="nav-link active">FAQ</a></li>
+            </ul>
+            <div class="nav-buttons">
+                <button class="btn btn-outline">Sign In</button>
+                <button class="btn btn-primary">Sign Up</button>
+                <div class="language-selector">
+                    <i class="fas fa-globe"></i>
+                    <span>EN</span>
+                </div>
+            </div>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Legal Hero -->
+    <section class="legal-hero">
+        <div class="container">
+            <h1 style="font-size: clamp(2.5rem, 5vw, 3.5rem); font-weight: 800; margin-bottom: 24px;">
+                Terms and <span class="highlight-text">Services</span>
+            </h1>
+            <p style="font-size: 18px; color: var(--text-secondary); max-width: 600px; margin: 0 auto;">
+                Legal terms and conditions governing the use of AE Platform services.
+            </p>
+        </div>
+    </section>
+
+    <!-- Legal Content -->
+    <section class="legal-content">
+        <div class="container">
+            <div class="legal-container">
+                <div class="effective-date">
+                    <h3 style="color: var(--primary-color); margin-bottom: 8px;">Effective Date</h3>
+                    <p style="color: var(--text-secondary); margin: 0;">[Insert Date]</p>
+                </div>
+
+                <div style="margin-bottom: 40px;">
+                    <p>Welcome to AE Platform, a blockchain-based ecosystem designed to tokenize, trade, and settle crude oil assets securely and transparently. These Terms and Services ("Terms") govern your use of our website, platform, mobile applications, and any associated products or services provided by AE ("we", "our", "us").</p>
+                    <p><strong>By accessing or using AE, you agree to be bound by these Terms. Please read them carefully.</strong></p>
+                </div>
+
+                <!-- Table of Contents -->
+                <div class="table-of-contents">
+                    <h3><i class="fas fa-list"></i> Table of Contents</h3>
+                    <ul>
+                        <li><a href="#eligibility">1. Eligibility & Acceptance</a></li>
+                        <li><a href="#services">2. Platform Services</a></li>
+                        <li><a href="#accounts">3. User Accounts</a></li>
+                        <li><a href="#compliance">4. KYC/AML Compliance</a></li>
+                        <li><a href="#tokens">5. Token Usage and Risks</a></li>
+                        <li><a href="#prohibited">6. Prohibited Activities</a></li>
+                        <li><a href="#intellectual">7. Intellectual Property</a></li>
+                        <li><a href="#liability">8. Limitation of Liability</a></li>
+                        <li><a href="#privacy">9. Privacy Policy</a></li>
+                        <li><a href="#modifications">10. Modifications to Terms</a></li>
+                        <li><a href="#termination">11. Termination</a></li>
+                        <li><a href="#governing">12. Governing Law and Jurisdiction</a></li>
+                        <li><a href="#contact">13. Contact Information</a></li>
+                    </ul>
+                </div>
+
+                <!-- Legal Sections -->
+                <div class="legal-section" id="eligibility">
+                    <h2>1. Eligibility & Acceptance</h2>
+                    <p>You must be at least 18 years old or the legal age of majority in your jurisdiction to use AE. By registering, you confirm that you:</p>
+                    <ul>
+                        <li>Have full legal capacity to enter into binding agreements</li>
+                        <li>Are not located in a sanctioned country or on any restricted persons list</li>
+                        <li>Will comply with all applicable laws, including local regulations on digital assets and commodities</li>
+                    </ul>
+                </div>
+
+                <div class="legal-section" id="services">
+                    <h2>2. Platform Services</h2>
+                    <p>AE provides digital infrastructure to:</p>
+                    <ul>
+                        <li>Tokenize crude oil via AE-OIL tokens (asset-backed)</li>
+                        <li>Enable trading and settlement of AE tokens (utility & commodity tokens)</li>
+                        <li>Offer wallet services, portfolio tracking, and ESG transparency tools</li>
+                        <li>Facilitate KYC/AML-verified user access to our ecosystem</li>
+                    </ul>
+                    <p><span class="highlight-text">We reserve the right to modify or discontinue any feature at any time without prior notice.</span></p>
+                </div>
+
+                <div class="legal-section" id="accounts">
+                    <h2>3. User Accounts</h2>
+                    <p>You are responsible for safeguarding your account credentials. You agree to:</p>
+                    <ul>
+                        <li>Provide accurate and complete information during registration</li>
+                        <li>Maintain the security of your login details</li>
+                        <li>Notify us immediately of unauthorized access</li>
+                    </ul>
+                    
+                    <div class="warning-box">
+                        <h4><i class="fas fa-exclamation-triangle"></i> Important Notice</h4>
+                        <p>AE is not liable for losses resulting from compromised access due to user negligence.</p>
+                    </div>
+                </div>
+
+                <div class="legal-section" id="compliance">
+                    <h2>4. KYC/AML Compliance</h2>
+                    <p>We are a compliance-first platform. All users must complete Know Your Customer (KYC) verification. We also comply with Anti-Money Laundering (AML) and Counter-Terrorism Financing (CTF) obligations.</p>
+                    
+                    <h3>We reserve the right to:</h3>
+                    <ul>
+                        <li>Reject, suspend, or terminate accounts for incomplete or suspicious KYC data</li>
+                        <li>Share information with regulatory bodies as required by law</li>
+                        <li>Conduct enhanced due diligence for high-value transactions</li>
+                    </ul>
+                </div>
+
+                <div class="legal-section" id="tokens">
+                    <h2>5. Token Usage and Risks</h2>
+                    <p>You understand that AE and AE-OIL tokens are cryptographic assets and not fiat currencies or legal tender. You acknowledge that:</p>
+                    <ul>
+                        <li>Digital asset values are volatile and can fluctuate dramatically</li>
+                        <li>There is a risk of total or partial loss of your holdings</li>
+                        <li>AE does not offer investment advice or guaranteed returns</li>
+                        <li>Blockchain transactions are irreversible</li>
+                    </ul>
+                    
+                    <div class="warning-box">
+                        <h4><i class="fas fa-exclamation-triangle"></i> Risk Warning</h4>
+                        <p>Token usage is at your sole risk. Please consult a qualified financial advisor before participating.</p>
+                    </div>
+                </div>
+
+                <div class="legal-section" id="prohibited">
+                    <h2>6. Prohibited Activities</h2>
+                    <p>You agree not to use AE for any unlawful purposes, including but not limited to:</p>
+                    <ul>
+                        <li>Money laundering, terrorism financing, or tax evasion</li>
+                        <li>Circumventing export controls or sanctions</li>
+                        <li>Attempting to hack, manipulate, or reverse-engineer our systems</li>
+                        <li>Engaging in wash trading, price manipulation, or deceptive practices</li>
+                        <li>Creating multiple accounts to bypass limits or restrictions</li>
+                    </ul>
+                    <p><span class="highlight-text">Violations will result in account termination and legal action.</span></p>
+                </div>
+
+                <div class="legal-section" id="intellectual">
+                    <h2>7. Intellectual Property</h2>
+                    <p>All platform content, including text, code, designs, logos, and smart contracts, are the intellectual property of AE. You may not reproduce, copy, or redistribute any part of the platform without prior written consent.</p>
+                    
+                    <div class="info-box">
+                        <h4><i class="fas fa-info-circle"></i> License Grant</h4>
+                        <p>We grant you a limited, non-exclusive, non-transferable license to use our platform solely for its intended purposes.</p>
+                    </div>
+                </div>
+
+                <div class="legal-section" id="liability">
+                    <h2>8. Limitation of Liability</h2>
+                    <p>To the fullest extent permitted by law, AE is not liable for:</p>
+                    <ul>
+                        <li>Any indirect, incidental, or consequential damages</li>
+                        <li>Loss of profits, digital assets, or data</li>
+                        <li>Platform downtime or network failure</li>
+                        <li>Third-party actions or services</li>
+                        <li>Market volatility or trading losses</li>
+                    </ul>
+                    <p><span class="highlight-text">Use of AE is provided "as-is" and "as available" without warranties of any kind.</span></p>
+                </div>
+
+                <div class="legal-section" id="privacy">
+                    <h2>9. Privacy Policy</h2>
+                    <p>Your privacy is important to us. Our <a href="privacy.html" style="color: var(--primary-color);">Privacy Policy</a> explains how we collect, store, and process your personal data. By using AE, you consent to such processing.</p>
+                </div>
+
+                <div class="legal-section" id="modifications">
+                    <h2>10. Modifications to Terms</h2>
+                    <p>We may revise these Terms at any time. Updated versions will be posted on our website and become effective immediately upon publication. Continued use of AE constitutes acceptance of those changes.</p>
+                    
+                    <div class="info-box">
+                        <h4><i class="fas fa-bell"></i> Notification</h4>
+                        <p>We will notify users of material changes via email or platform notifications.</p>
+                    </div>
+                </div>
+
+                <div class="legal-section" id="termination">
+                    <h2>11. Termination</h2>
+                    <p>AE reserves the right to suspend or terminate access to the platform for any reason, including breach of these Terms or regulatory requirements. Upon termination, your access to services will cease and outstanding obligations may be enforced.</p>
+                    
+                    <h3>Termination Process:</h3>
+                    <ul>
+                        <li>Notice will be provided where legally required</li>
+                        <li>Pending transactions will be completed where possible</li>
+                        <li>Account data will be retained per applicable laws</li>
+                    </ul>
+                </div>
+
+                <div class="legal-section" id="governing">
+                    <h2>12. Governing Law and Jurisdiction</h2>
+                    <p>These Terms are governed by the laws of <span class="highlight-text">[Insert Jurisdiction]</span>. Any disputes shall be subject to the exclusive jurisdiction of the courts or arbitration bodies in that region.</p>
+                    
+                    <h3>Dispute Resolution:</h3>
+                    <ul>
+                        <li>Initial resolution through good faith negotiations</li>
+                        <li>Mediation if direct negotiations fail</li>
+                        <li>Binding arbitration for unresolved disputes</li>
+                    </ul>
+                </div>
+
+                <div class="legal-section" id="contact">
+                    <h2>13. Contact Information</h2>
+                    <p>If you have questions about these Terms, please contact us:</p>
+                    <div style="background: var(--dark-tertiary); padding: 20px; border-radius: 12px; margin-top: 16px;">
+                        <p style="margin: 8px 0;"><strong>📧 Email:</strong> legal@aeplatform.com</p>
+                        <p style="margin: 8px 0;"><strong>🌐 Website:</strong> www.aeplatform.com</p>
+                        <p style="margin: 8px 0;"><strong>📍 Address:</strong> [Legal Entity Address]</p>
+                    </div>
+                </div>
+
+                <!-- Last Updated -->
+                <div style="margin-top: 60px; padding-top: 40px; border-top: 1px solid var(--border-color); text-center;">
+                    <p style="color: var(--text-muted); font-size: 14px;">
+                        Last Updated: [Insert Date] | Version 1.0
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-logo">
+                        <i class="fas fa-oil-can"></i>
+                        <span>AE</span>
+                    </div>
+                    <p>Decentralizing Energy. Empowering the World.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-telegram"></i></a>
+                        <a href="#"><i class="fab fa-discord"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h4>Platform</h4>
+                    <ul>
+                        <li><a href="#">Demo Account</a></li>
+                        <li><a href="#">Live Trading</a></li>
+                        <li><a href="#">Mobile App</a></li>
+                        <li><a href="#">API Documentation</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="#">Whitepaper</a></li>
+                        <li><a href="#">Educational Center</a></li>
+                        <li><a href="#">Market Analysis</a></li>
+                        <li><a href="#">Support Center</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Legal</h4>
+                    <ul>
+                        <li><a href="terms.html">Terms of Service</a></li>
+                        <li><a href="privacy.html">Privacy Policy</a></li>
+                        <li><a href="disclosure.html">Risk Disclosure</a></li>
+                        <li><a href="#">Compliance</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 AE Platform. All rights reserved.</p>
+                <div class="footer-links">
+                    <a href="privacy.html">Privacy</a>
+                    <a href="terms.html">Terms</a>
+                    <a href="#">Cookies</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <script src="{% static 'script.js'%}"></script>
+</body>
+</html>

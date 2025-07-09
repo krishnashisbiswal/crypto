@@ -1,0 +1,676 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - Crypto Platform{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <!-- Header Section -->
+    <div class="dashboard-header">
+        <h1 class="dashboard-title">Portfolio Dashboard</h1>
+        <div class="dashboard-stats">
+            <div class="stat-item">
+                <span class="stat-label">Last Updated</span>
+                <span class="stat-value">{{ last_updated|date:"M d, H:i" }}</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Stats Cards -->
+    <div class="stats-grid">
+        <div class="stat-card primary">
+            <div class="stat-icon">
+                <i class="fas fa-wallet"></i>
+            </div>
+            <div class="stat-content">
+                <div class="stat-number">₹{{ total_value|floatformat:2 }}</div>
+                <div class="stat-label">Total Portfolio Value</div>
+                <div class="stat-trend positive">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>+2.5%</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="stat-card success">
+            <div class="stat-icon">
+                <i class="fas fa-piggy-bank"></i>
+            </div>
+            <div class="stat-content">
+                <div class="stat-number">₹{{ total_invested|floatformat:2 }}</div>
+                <div class="stat-label">Total Invested</div>
+                <div class="stat-trend neutral">
+                    <i class="fas fa-minus"></i>
+                    <span>0%</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="stat-card {% if total_profit_loss >= 0 %}profit{% else %}loss{% endif %}">
+            <div class="stat-icon">
+                <i class="fas fa-chart-line"></i>
+            </div>
+            <div class="stat-content">
+                <div class="stat-number">₹{{ total_profit_loss|floatformat:2 }}</div>
+                <div class="stat-label">Profit & Loss</div>
+                <div class="stat-trend {% if total_profit_loss >= 0 %}positive{% else %}negative{% endif %}">
+                    <i class="fas fa-arrow-{% if total_profit_loss >= 0 %}up{% else %}down{% endif %}"></i>
+                    <span>{{ total_profit_loss_percentage|floatformat:2 }}%</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="stat-card info">
+            <div class="stat-icon">
+                <i class="fas fa-coins"></i>
+            </div>
+            <div class="stat-content">
+                <div class="stat-number">{{ portfolios|length }}</div>
+                <div class="stat-label">Active Holdings</div>
+                <div class="stat-trend positive">
+                    <i class="fas fa-plus"></i>
+                    <span>{{ portfolios|length }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Holdings Table -->
+    <div class="main-content">
+        <div class="content-card">
+            <div class="card-header">
+                {% comment %} <h2 class="card-title">Your Holdings</h2>
+                <div class="card-actions">
+                    <button class="btn btn-outline">Export</button>
+                    <button class="btn btn-primary" >Add New</button>
+                </div> {% endcomment %}
+            </div>
+            
+            <div class="card-content">
+                {% if portfolios %}
+                <div class="table-container">
+                    <table class="modern-table">
+                        <thead>
+                            <tr>
+                                <th>Cryptocurrency</th>
+                                <th>Balance</th>
+                                <th>Current Price</th>
+                                <th>Market Value</th>
+                                <th>Invested</th>
+                                <th>P&L</th>
+                                <th>24h Change</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for portfolio in portfolios %}
+                            <tr class="table-row">
+                                <td class="crypto-info">
+                                    <div class="crypto-avatar">
+                                        <img src="https://via.placeholder.com/32/{{ portfolio.cryptocurrency.symbol|lower }}" alt="{{ portfolio.cryptocurrency.symbol }}">
+                                    </div>
+                                    <div class="crypto-details">
+                                        <div class="crypto-name">{{ portfolio.cryptocurrency.name }}</div>
+                                        <div class="crypto-symbol">{{ portfolio.cryptocurrency.symbol }}</div>
+                                    </div>
+                                </td>
+                                <td class="balance">{{ portfolio.balance|floatformat:8 }}</td>
+                                <td class="price">₹{{ portfolio.cryptocurrency.current_price|floatformat:8 }}</td>
+                                <td class="value">₹{{ portfolio.current_value|floatformat:2 }}</td>
+                                <td class="invested">₹{{ portfolio.total_invested|floatformat:2 }}</td>
+                                <td class="pnl">
+                                    <span class="pnl-amount {% if portfolio.profit_loss >= 0 %}positive{% else %}negative{% endif %}">
+                                        ₹{{ portfolio.profit_loss|floatformat:2 }}
+                                    </span>
+                                    <span class="pnl-percentage {% if portfolio.profit_loss_percentage >= 0 %}positive{% else %}negative{% endif %}">
+                                        ({{ portfolio.profit_loss_percentage|floatformat:2 }}%)
+                                    </span>
+                                </td>
+                                <td class="change-24h">
+                                    <span class="change-badge {% if portfolio.cryptocurrency.price_change_24h >= 0 %}positive{% else %}negative{% endif %}">
+                                        <i class="fas fa-arrow-{% if portfolio.cryptocurrency.price_change_24h >= 0 %}up{% else %}down{% endif %}"></i>
+                                        {{ portfolio.cryptocurrency.price_change_24h|floatformat:2 }}%
+                                    </span>
+                                </td>
+                                <td class="actions">
+                                    <button class="action-btn chart-btn" onclick="showChart({{ portfolio.cryptocurrency.id }})">
+                                        <i class="fas fa-chart-area"></i>
+                                    </button>
+                                    <button class="action-btn trade-btn">
+                                        <i class="fas fa-exchange-alt"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="empty-state">
+                    <div class="empty-icon">
+                        <i class="fas fa-chart-pie"></i>
+                    </div>
+                    <h3>No Holdings Yet</h3>
+                    <p>Start building your crypto portfolio today</p>
+                    <a href="{% url 'deposits:deposit_create' %}" class="btn btn-primary">Make Your First Deposit</a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Chart Modal -->
+    <div class="modal fade" id="chartModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Price Chart</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <canvas id="priceChart" width="400" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.dashboard-container {
+    padding: 24px;
+    background: #f8fafc;
+    min-height: 100vh;
+}
+
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 32px;
+}
+
+.dashboard-title {
+    font-size: 32px;
+    font-weight: 700;
+    color: #1e293b;
+    margin: 0;
+}
+
+.dashboard-stats {
+    display: flex;
+    gap: 24px;
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.stat-item .stat-label {
+    font-size: 14px;
+    color: #64748b;
+    margin-bottom: 4px;
+}
+
+.stat-item .stat-value {
+    font-size: 16px;
+    font-weight: 600;
+    color: #1e293b;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+    margin-bottom: 32px;
+}
+
+.stat-card {
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e2e8f0;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.stat-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    color: white;
+}
+
+.stat-card.primary .stat-icon {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.stat-card.success .stat-icon {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+}
+
+.stat-card.profit .stat-icon {
+    background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+}
+
+.stat-card.loss .stat-icon {
+    background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+}
+
+.stat-card.info .stat-icon {
+    background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+}
+
+.stat-content {
+    flex: 1;
+}
+
+.stat-number {
+    font-size: 24px;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 4px;
+}
+
+.stat-content .stat-label {
+    font-size: 14px;
+    color: #64748b;
+    margin-bottom: 8px;
+}
+
+.stat-trend {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.stat-trend.positive {
+    color: #16a34a;
+}
+
+.stat-trend.negative {
+    color: #dc2626;
+}
+
+.stat-trend.neutral {
+    color: #64748b;
+}
+
+.main-content {
+    display: grid;
+    gap: 24px;
+}
+
+.content-card {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e2e8f0;
+    overflow: hidden;
+}
+
+.card-header {
+    padding: 24px;
+    border-bottom: 1px solid #e2e8f0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.card-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: #1e293b;
+    margin: 0;
+}
+
+.card-actions {
+    display: flex;
+    gap: 12px;
+}
+
+.btn {
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.btn-outline {
+    background: white;
+    color: #64748b;
+    border: 1px solid #e2e8f0;
+}
+
+.btn-outline:hover {
+    background: #f8fafc;
+    border-color: #cbd5e1;
+}
+
+.card-content {
+    padding: 0;
+}
+
+.table-container {
+    overflow-x: auto;
+}
+
+.modern-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.modern-table th {
+    background: #f8fafc;
+    padding: 16px 24px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.modern-table td {
+    padding: 16px 24px;
+    border-bottom: 1px solid #f1f5f9;
+    vertical-align: middle;
+}
+
+.table-row:hover {
+    background: #f8fafc;
+}
+
+.crypto-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.crypto-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #f1f5f9;
+}
+
+.crypto-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.crypto-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.crypto-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1e293b;
+}
+
+.crypto-symbol {
+    font-size: 12px;
+    color: #64748b;
+    text-transform: uppercase;
+}
+
+.balance, .price, .value, .invested {
+    font-size: 14px;
+    font-weight: 500;
+    color: #1e293b;
+}
+
+.pnl {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.pnl-amount {
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.pnl-percentage {
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.positive {
+    color: #16a34a;
+}
+
+.negative {
+    color: #dc2626;
+}
+
+.change-24h {
+    text-align: center;
+}
+
+.change-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.change-badge.positive {
+    background: #dcfce7;
+    color: #16a34a;
+}
+
+.change-badge.negative {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+.actions {
+    display: flex;
+    gap: 8px;
+}
+
+.action-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.chart-btn {
+    background: #f0f9ff;
+    color: #0369a1;
+}
+
+.chart-btn:hover {
+    background: #e0f2fe;
+}
+
+.trade-btn {
+    background: #f0fdf4;
+    color: #16a34a;
+}
+
+.trade-btn:hover {
+    background: #dcfce7;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 64px 24px;
+}
+
+.empty-icon {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 24px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    color: white;
+}
+
+.empty-state h3 {
+    font-size: 20px;
+    font-weight: 600;
+    color: #1e293b;
+    margin: 0 0 8px;
+}
+
+.empty-state p {
+    font-size: 14px;
+    color: #64748b;
+    margin: 0 0 24px;
+}
+
+@media (max-width: 768px) {
+    .dashboard-container {
+        padding: 16px;
+    }
+    
+    .dashboard-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+    
+    .dashboard-title {
+        font-size: 24px;
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .card-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+    
+    .modern-table {
+        font-size: 12px;
+    }
+    
+    .modern-table th,
+    .modern-table td {
+        padding: 12px 16px;
+    }
+}
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+let priceChart = null;
+
+function showChart(cryptoId) {
+    fetch(`/trading/chart/${cryptoId}/`)
+        .then(response => response.json())
+        .then(data => {
+            const ctx = document.getElementById('priceChart').getContext('2d');
+            
+            if (priceChart) {
+                priceChart.destroy();
+            }
+            
+            priceChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: data.labels,
+                    datasets: [{
+                        label: `${data.crypto_name} (${data.crypto_symbol})`,
+                        data: data.prices,
+                        borderColor: 'rgb(102, 126, 234)',
+                        backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: `Current Price: ₹${data.current_price} (${data.price_change > 0 ? '+' : ''}${data.price_change}%)`
+                        },
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.1)'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    },
+                    elements: {
+                        point: {
+                            radius: 0,
+                            hoverRadius: 4
+                        }
+                    }
+                }
+            });
+            
+            document.querySelector('.modal-title').textContent = `${data.crypto_name} Price Chart`;
+            new bootstrap.Modal(document.getElementById('chartModal')).show();
+        })
+        .catch(error => {
+            console.error('Error fetching chart data:', error);
+        });
+}
+</script>
+{% endblock %}

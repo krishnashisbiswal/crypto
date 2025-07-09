@@ -1,0 +1,1034 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQ - AE Platform Frequently Asked Questions</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css'%}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Extra CSS for FAQ Page -->
+    <style>
+        .faq-hero {
+            background: 
+                linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.9)),
+                url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><defs><pattern id="question" width="100" height="100" patternUnits="userSpaceOnUse"><text x="50" y="50" text-anchor="middle" dominant-baseline="central" font-size="40" fill="rgba(34,197,94,0.1)" font-family="Arial">?</text></pattern></defs><rect width="1000" height="1000" fill="url(%23question)"/></svg>');
+            padding: 140px 0 80px;
+            text-align: center;
+            position: relative;
+        }
+
+        .faq-hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 30% 70%, rgba(34, 197, 94, 0.15) 0%, transparent 50%);
+            animation: pulse 8s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        .faq-categories {
+            padding: 80px 0;
+            background: var(--dark-bg);
+        }
+
+        .category-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin-bottom: 60px;
+            flex-wrap: wrap;
+        }
+
+        .category-tab {
+            background: var(--dark-secondary);
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            padding: 12px 24px;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .category-tab.active {
+            background: var(--gradient-primary);
+            color: white;
+            border-color: var(--primary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(34, 197, 94, 0.3);
+        }
+
+        .category-tab:hover:not(.active) {
+            background: var(--dark-tertiary);
+            border-color: var(--primary-color);
+            color: var(--text-primary);
+        }
+
+        .faq-section {
+            margin-bottom: 60px;
+        }
+
+        .section-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 32px;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .enhanced-faq-item {
+            background: var(--dark-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            margin-bottom: 16px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .enhanced-faq-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: var(--gradient-primary);
+            transform: scaleY(0);
+            transition: transform 0.3s ease;
+        }
+
+        .enhanced-faq-item:hover::before {
+            transform: scaleY(1);
+        }
+
+        .enhanced-faq-item:hover {
+            border-color: var(--primary-color);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .enhanced-faq-question {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 24px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .enhanced-faq-question:hover {
+            background: rgba(34, 197, 94, 0.05);
+        }
+
+        .question-content {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex: 1;
+        }
+
+        .question-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--gradient-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+
+        .question-text {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .toggle-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--dark-tertiary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-color);
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .enhanced-faq-item.active .toggle-icon {
+            transform: rotate(45deg);
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .enhanced-faq-answer {
+            padding: 0 24px;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.4s ease;
+        }
+
+        .enhanced-faq-item.active .enhanced-faq-answer {
+            padding: 0 24px 24px 80px;
+            max-height: 500px;
+        }
+
+        .answer-content {
+            color: var(--text-secondary);
+            line-height: 1.7;
+            font-size: 16px;
+        }
+
+        .answer-content strong {
+            color: var(--text-primary);
+        }
+
+        .answer-content ul {
+            margin: 16px 0;
+            padding-left: 20px;
+        }
+
+        .answer-content li {
+            margin-bottom: 8px;
+        }
+
+        .search-box {
+            max-width: 500px;
+            margin: 0 auto 40px;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 16px 24px 16px 52px;
+            background: var(--dark-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 50px;
+            color: var(--text-primary);
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 18px;
+        }
+
+        .help-section {
+            background: var(--dark-secondary);
+            padding: 100px 0;
+            text-align: center;
+        }
+
+        .help-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 32px;
+            margin-top: 60px;
+        }
+
+        .help-card {
+            background: var(--dark-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 40px 32px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .help-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent, rgba(34, 197, 94, 0.05), transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .help-card:hover::before {
+            opacity: 1;
+        }
+
+        .help-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--primary-color);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .help-icon {
+            width: 80px;
+            height: 80px;
+            background: var(--gradient-primary);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+            font-size: 32px;
+            color: white;
+        }
+
+        .contact-section {
+            background: var(--dark-bg);
+            padding: 80px 0;
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 32px;
+            margin-top: 40px;
+        }
+
+        .contact-method {
+            background: var(--dark-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 32px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .contact-method:hover {
+            transform: translateY(-4px);
+            border-color: var(--primary-color);
+        }
+
+        .contact-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--gradient-secondary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 24px;
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .faq-hero {
+                padding: 120px 0 60px;
+            }
+
+            .category-tabs {
+                justify-content: flex-start;
+                overflow-x: auto;
+                padding-bottom: 10px;
+            }
+
+            .enhanced-faq-item.active .enhanced-faq-answer {
+                padding: 0 24px 24px 64px;
+            }
+
+            .question-text {
+                font-size: 16px;
+            }
+
+            .help-cards {
+                grid-template-columns: 1fr;
+                gap: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-oil-can"></i>
+                <span>AE</span>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="{% url "accounts:home" %}" class="nav-link">Home</a></li>
+                <li><a href="{% url "accounts:about" %}" class="nav-link">About</a></li>
+                <li><a href="{% url "accounts:revolution" %}" class="nav-link">The Revolution</a></li>
+                <li><a href="{% url "accounts:vision" %}" class="nav-link">Vision</a></li>  
+                <li><a href="{% url "accounts:faq" %}" class="nav-link active">FAQ</a></li>
+            </ul>
+            <div class="nav-buttons">
+                <button class="btn btn-outline">Sign In</button>
+                <button class="btn btn-primary">Sign Up</button>
+                <div class="language-selector">
+                    <i class="fas fa-globe"></i>
+                    <span>EN</span>
+                </div>
+            </div>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- FAQ Hero -->
+    <section class="faq-hero">
+        <div class="container">
+            <h1 style="font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 800; margin-bottom: 24px;">
+                Frequently Asked <span class="highlight-text">Questions</span>
+            </h1>
+            <p style="font-size: 20px; color: var(--text-secondary); max-width: 700px; margin: 0 auto;">
+                Find answers to the most common questions about AE Platform and blockchain-based oil trading.
+            </p>
+        </div>
+    </section>
+
+    <!-- Search and Categories -->
+    <section class="faq-categories">
+        <div class="container">
+            <!-- Search Box -->
+            <div class="search-box">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" class="search-input" placeholder="Search for answers..." id="faqSearch">
+            </div>
+
+            <!-- Category Tabs -->
+            <div class="category-tabs">
+                <div class="category-tab active" data-category="all">
+                    <i class="fas fa-th-large"></i>
+                    All Topics
+                </div>
+                <div class="category-tab" data-category="trading">
+                    <i class="fas fa-chart-line"></i>
+                    Trading
+                </div>
+                <div class="category-tab" data-category="tokens">
+                    <i class="fas fa-coins"></i>
+                    Tokens & Blockchain
+                </div>
+                <div class="category-tab" data-category="regulatory">
+                    <i class="fas fa-balance-scale"></i>
+                    Regulatory
+                </div>
+                <div class="category-tab" data-category="technical">
+                    <i class="fas fa-cog"></i>
+                    Technical
+                </div>
+            </div>
+
+            <!-- FAQ Sections -->
+            <div class="faq-content">
+                <!-- About AE and Tokenization -->
+                <div class="faq-section" data-category="tokens">
+                    <h3 class="section-title">
+                        <i class="fas fa-cube"></i>
+                        About AE and Tokenization
+                    </h3>
+                    
+                    <div class="enhanced-faq-item">
+                        <div class="enhanced-faq-question">
+                            <div class="question-content">
+                                <div class="question-icon">
+                                    <i class="fas fa-question"></i>
+                                </div>
+                                <h4 class="question-text">What is AE?</h4>
+                            </div>
+                            <div class="toggle-icon">
+                                <i class="fas fa-plus"></i>
+                            </div>
+                        </div>
+                        <div class="enhanced-faq-answer">
+                            <div class="answer-content">
+                                <p><strong>AE is a blockchain-based platform that tokenizes crude oil</strong>, enabling secure, transparent, and real-time trading of oil-backed digital assets.</p>
+                                <p>AE introduces a dual-token system:</p>
+                                <ul>
+                                    <li><strong>AE utility token</strong> - for governance, access, staking</li>
+                                    <li><strong>AE-OIL token</strong> - representing physical oil reserves</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="enhanced-faq-item">
+                        <div class="enhanced-faq-question">
+                            <div class="question-content">
+                                <div class="question-icon">
+                                    <i class="fas fa-oil-well"></i>
+                                </div>
+                                <h4 class="question-text">How does AE-OIL work?</h4>
+                            </div>
+                            <div class="toggle-icon">
+                                <i class="fas fa-plus"></i>
+                            </div>
+                        </div>
+                        <div class="enhanced-faq-answer">
+                            <div class="answer-content">
+                                <p><strong>AE-OIL is an asset-backed token</strong> corresponding to a specific quantity of crude oil. Each token is linked to verifiable reserves stored in third-party custody and can be traded or redeemed.</p>
+                                <p>Key features:</p>
+                                <ul>
+                                    <li>1:1 backing with physical oil barrels</li>
+                                    <li>Embedded metadata (grade, location, ESG data)</li>
+                                    <li>Real-time tracking and verification</li>
+                                    <li>Redeemable for physical delivery</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="enhanced-faq-item">
+                        <div class="enhanced-faq-question">
+                            <div class="question-content">
+                                <div class="question-icon">
+                                    <i class="fas fa-coins"></i>
+                                </div>
+                                <h4 class="question-text">Is AE a cryptocurrency or a commodity token?</h4>
+                            </div>
+                            <div class="toggle-icon">
+                                <i class="fas fa-plus"></i>
+                            </div>
+                        </div>
+                        <div class="enhanced-faq-answer">
+                            <div class="answer-content">
+                                <p><strong>AE includes both:</strong></p>
+                                <ul>
+                                    <li><strong>AE Utility Token</strong> - for governance, access, staking</li>
+                                    <li><strong>AE-OIL Token</strong> - representing physical oil assets</li>
+                                </ul>
+                                <p>This dual structure provides both utility functions and real-world asset backing.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Trading Questions -->
+                <div class="faq-section" data-category="trading">
+                    <h3 class="section-title">
+                        <i class="fas fa-chart-line"></i>
+                        Trading & Platform Usage
+                    </h3>
+
+                    <div class="enhanced-faq-item">
+                        <div class="enhanced-faq-question">
+                            <div class="question-content">
+                                <div class="question-icon">
+                                    <i class="fas fa-graduation-cap"></i>
+                                </div>
+                                <h4 class="question-text">How do I learn how to trade?</h4>
+                            </div>
+                            <div class="toggle-icon">
+                                <i class="fas fa-plus"></i>
+                            </div>
+                        </div>
+                        <div class="enhanced-faq-answer">
+                            <div class="answer-content">
+                                <p><strong>Start with our demo account</strong> to practice trading without risk. We also provide:</p>
+                                <ul>
+                                    <li>Educational resources and tutorials</li>
+                                    <li>Market analysis and insights</li>
+                                    <li>Step-by-step guides on oil trading</li>
+                                    <li>Blockchain technology explanations</li>
+                                    <li>Live webinars and Q&A sessions</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="enhanced-faq-item">
+                        <div class="enhanced-faq-question">
+                            <div class="question-content">
+                                <div class="question-icon">
+                                    <i class="fas fa-clock"></i>
+                                </div>
+                                <h4 class="question-text">How long does it take to withdraw funds?</h4>
+                            </div>
+                            <div class="toggle-icon">
+                                <i class="fas fa-plus"></i>
+                            </div>
+                        </div>
+                        <div class="enhanced-faq-answer">
+                            <div class="answer-content">
+                                <p><strong>Withdrawals are processed instantly</strong> through smart contracts for crypto assets.</p>
+                                <p>For fiat withdrawals:</p>
+                                <ul>
+                                    <li>Bank transfers: 1-3 business days</li>
+                                    <li>Wire transfers: Same day to 2 business days</li>
+                                    <li>Digital wallets: Instant to 1 business day</li>
+                                </ul>
+                                <p>Processing times depend on your payment method and bank procedures.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="enhanced-faq-item">
+                        <div class="enhanced-faq-question">
+                            <div class="question-content">
+                                <div class="question-icon">
+                                    <i class="fas fa-mobile-alt"></i>
+                                </div>
+                                <h4 class="question-text">Can I trade using a phone / mobile device?</h4>
+                            </div>
+                            <div class="toggle-icon">
+                                <i class="fas fa-plus"></i>
+                            </div>
+                        </div>
+                        <div class="enhanced-faq-answer">
+                            <div class="answer-content">
+                                <p><strong>Yes!</strong> Our mobile app is available for both iOS and Android devices.</p>
+                                <p>Mobile features include:</p>
+                                <ul>
+                                    <li>Full trading functionality</li>
+                                    <li>Real-time market data</li>
+                                    <li>Portfolio monitoring</li>
+                                    <li>Push notifications for price alerts</li>
+                                    <li>Secure biometric authentication</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="enhanced-faq-item">
+                        <div class="enhanced-faq-question">
+                            <div class="question-content">
+                                <div class="question-icon">
+                                    <i class="fas fa-dollar-sign"></i>
+                                </div>
+                                <h4 class="question-text">What is the minimum deposit amount?</h4>
+                            </div>
+                            <div class="toggle-icon">
+                                <i class="fas fa-plus"></i>
+                            </div>
+                        </div>
+                        <div class="enhanced-faq-answer">
+                            <div class="answer-content">
+                                <p><strong>The minimum deposit amount is $10 USD.</strong> This low barrier to entry makes AE accessible to traders of all levels and investment capacities.</p>
+                                <p>We support various deposit methods:</p>
+                                <ul>
+                                    <li>Bank transfers</li>
+                                    <li>Credit/debit cards</li>
+                                    <li>Cryptocurrency</li>
+                                    <li>Digital wallets</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Technical Questions -->
+                <div class="faq-section" data-category="technical">
+                    <h3 class="section-title">
+                        <i class="fas fa-cog"></i>
+                        Technical & Blockchain
+                    </h3>
+
+                    <div class="enhanced-faq-item">
+                        <div class="enhanced-faq-question">
+                            <div class="question-content">
+                                <div class="question-icon">
+                                    <i class="fas fa-link"></i>
+                                </div>
+                                <h4 class="question-text">What blockchain is AE built on?</h4>
+                            </div>
+                            <div class="toggle-icon">
+                                <i class="fas fa-plus"></i>
+                            </div>
+                        </div>
+                        <div class="enhanced-faq-answer">
+                            <div class="answer-content">
+                                <p><strong>AE is built on Ethereum</strong> and optionally runs on Layer-2 solutions for better scalability and lower gas fees.</p>
+                                <p>Supported networks include:</p>
+                                <ul>
+                                    <li>Ethereum mainnet</li>
+                                    <li>Polygon for lower fees</li>
+                                    <li>Arbitrum for fast transactions</li>
+                                    <li>Custom sidechains for enterprise use</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="enhanced-faq-item">
+                        <div class="enhanced-faq-question">
+                            <div class="question-content">
+                                <div class="question-icon">
+                                    <i class="fas fa-shield-alt"></i>
+                                </div>
+                                <h4 class="question-text">What ensures the security of the platform?</h4>
+                            </div>
+                            <div class="toggle-icon">
+                                <i class="fas fa-plus"></i>
+                            </div>
+                        </div>
+                        <div class="enhanced-faq-answer">
+                            <div class="answer-content">
+                                <p><strong>Multiple layers of security protect the platform:</strong></p>
+                                <ul>
+                                    <li>Audited smart contracts by top-tier firms</li>
+                                    <li>Multi-signature wallets</li>
+                                    <li>Secure APIs and infrastructure</li>
+                                    <li>Regular penetration testing</li>
+                                    <li>Cold storage for large holdings</li>
+                                    <li>Insurance coverage</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="enhanced-faq-item">
+                        <div class="enhanced-faq-question">
+                            <div class="question-content">
+                                <div class="question-icon">
+                                    <i class="fas fa-warehouse"></i>
+                                </div>
+                                <h4 class="question-text">How is custody of oil reserves verified?</h4>
+                            </div>
+                            <div class="toggle-icon">
+                                <i class="fas fa-plus"></i>
+                            </div>
+                        </div>
+                        <div class="enhanced-faq-answer">
+                            <div class="answer-content">
+                                <p><strong>Through licensed storage facilities and blockchain-based oracles</strong> that report real-time reserve data.</p>
+                                <p>Verification process:</p>
+                                <ul>
+                                    <li>Third-party audited storage facilities</li>
+                                    <li>Regular inventory certifications</li>
+                                    <li>Blockchain oracles for real-time data</li>
+                                    <li>Transparent reserve reporting</li>
+                                    <li>Public attestations</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Regulatory Questions -->
+                <div class="faq-section" data-category="regulatory">
+                    <h3 class="section-title">
+                        <i class="fas fa-balance-scale"></i>
+                        Regulatory & Legal
+                    </h3>
+
+                    <div class="enhanced-faq-item">
+                        <div class="enhanced-faq-question">
+                            <div class="question-content">
+                                <div class="question-icon">
+                                    <i class="fas fa-globe"></i>
+                                </div>
+                                <h4 class="question-text">Is AE legal in my country?</h4>
+                            </div>
+                            <div class="toggle-icon">
+                                <i class="fas fa-plus"></i>
+                            </div>
+                        </div>
+                        <div class="enhanced-faq-answer">
+                            <div class="answer-content">
+                                <p><strong>AE complies with international standards</strong>, but some regions may restrict access. Please consult local laws.</p>
+                                <p>We operate in compliance with:</p>
+                                <ul>
+                                    <li>Financial regulations in major jurisdictions</li>
+                                    <li>Anti-money laundering (AML) laws</li>
+                                    <li>Know Your Customer (KYC) requirements</li>
+                                    <li>Commodity trading regulations</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="enhanced-faq-item">
+                        <div class="enhanced-faq-question">
+                            <div class="question-content">
+                                <div class="question-icon">
+                                    <i class="fas fa-user-check"></i>
+                                </div>
+                                <h4 class="question-text">Do I need to complete KYC to use AE?</h4>
+                            </div>
+                            <div class="toggle-icon">
+                                <i class="fas fa-plus"></i>
+                            </div>
+                        </div>
+                        <div class="enhanced-faq-answer">
+                            <div class="answer-content">
+                                <p><strong>Yes. KYC is mandatory</strong> to access AE trading, redemption, and utility features.</p>
+                                <p>KYC requirements include:</p>
+                                <ul>
+                                    <li>Government-issued ID verification</li>
+                                    <li>Proof of address</li>
+                                    <li>Selfie verification</li>
+                                    <li>Source of funds declaration (for large amounts)</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="enhanced-faq-item">
+                        <div class="enhanced-faq-question">
+                            <div class="question-content">
+                                <div class="question-icon">
+                                    <i class="fas fa-file-invoice-dollar"></i>
+                                </div>
+                                <h4 class="question-text">Are there any deposit or withdrawal fees?</h4>
+                            </div>
+                            <div class="toggle-icon">
+                                <i class="fas fa-plus"></i>
+                            </div>
+                        </div>
+                        <div class="enhanced-faq-answer">
+                            <div class="answer-content">
+                                <p><strong>We charge minimal platform fees</strong> for trading and settlement. Deposit fees vary by payment method.</p>
+                                <p>Fee structure:</p>
+                                <ul>
+                                    <li>Trading fees: 0.1% - 0.25%</li>
+                                    <li>Deposit fees: Free for crypto, 2-3% for cards</li>
+                                    <li>Withdrawal fees: Network gas fees apply</li>
+                                    <li>Redemption fees: Logistics and processing costs</li>
+                                </ul>
+                                <p>All fees are transparently displayed before confirming transactions.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Help Section -->
+    <section class="help-section">
+        <div class="container">
+            <h2 style="font-size: clamp(2rem, 4vw, 2.5rem); font-weight: 700; margin-bottom: 24px;">
+                Still Need Help?
+            </h2>
+            <p style="font-size: 18px; color: var(--text-secondary); max-width: 600px; margin: 0 auto;">
+                Our support team is here to assist you with any questions about AE Platform.
+            </p>
+            
+            <div class="help-cards">
+                <div class="help-card">
+                    <div class="help-icon">
+                        <i class="fas fa-headset"></i>
+                    </div>
+                    <h4 style="font-size: 20px; font-weight: 600; margin-bottom: 16px;">24/7 Support</h4>
+                    <p style="color: var(--text-secondary); line-height: 1.6; margin-bottom: 24px;">
+                        Get instant help from our support team available around the clock.
+                    </p>
+                    <button class="btn btn-primary">Contact Support</button>
+                </div>
+                
+                <div class="help-card">
+                    <div class="help-icon">
+                        <i class="fas fa-book"></i>
+                    </div>
+                    <h4 style="font-size: 20px; font-weight: 600; margin-bottom: 16px;">Documentation</h4>
+                    <p style="color: var(--text-secondary); line-height: 1.6; margin-bottom: 24px;">
+                        Explore our comprehensive guides and technical documentation.
+                    </p>
+                    <button class="btn btn-outline">View Docs</button>
+                </div>
+                
+                <div class="help-card">
+                    <div class="help-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h4 style="font-size: 20px; font-weight: 600; margin-bottom: 16px;">Community</h4>
+                    <p style="color: var(--text-secondary); line-height: 1.6; margin-bottom: 24px;">
+                        Join our community forums and connect with other traders.
+                    </p>
+                    <button class="btn btn-outline">Join Community</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Methods -->
+    <section class="contact-section">
+        <div class="container">
+            <div class="text-center" style="margin-bottom: 40px;">
+                <h2 style="font-size: clamp(2rem, 4vw, 2.5rem); font-weight: 700; margin-bottom: 16px;">
+                    Get in Touch
+                </h2>
+                <p style="font-size: 16px; color: var(--text-secondary);">
+                    Multiple ways to reach our team for support and inquiries.
+                </p>
+            </div>
+            
+            <div class="contact-grid">
+                <div class="contact-method">
+                    <div class="contact-icon">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <h4 style="font-size: 16px; font-weight: 600; margin-bottom: 8px;">Email Support</h4>
+                    <p style="color: var(--text-secondary); font-size: 14px;">support@aeplatform.com</p>
+                </div>
+                
+                <div class="contact-method">
+                    <div class="contact-icon">
+                        <i class="fab fa-telegram"></i>
+                    </div>
+                    <h4 style="font-size: 16px; font-weight: 600; margin-bottom: 8px;">Telegram</h4>
+                    <p style="color: var(--text-secondary); font-size: 14px;">@AEPlatform</p>
+                </div>
+                
+                <div class="contact-method">
+                    <div class="contact-icon">
+                        <i class="fab fa-discord"></i>
+                    </div>
+                    <h4 style="font-size: 16px; font-weight: 600; margin-bottom: 8px;">Discord</h4>
+                    <p style="color: var(--text-secondary); font-size: 14px;">AE Community</p>
+                </div>
+                
+                <div class="contact-method">
+                    <div class="contact-icon">
+                        <i class="fas fa-building"></i>
+                    </div>
+                    <h4 style="font-size: 16px; font-weight: 600; margin-bottom: 8px;">Institutional</h4>
+                    <p style="color: var(--text-secondary); font-size: 14px;">partners@aeplatform.com</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-logo">
+                        <i class="fas fa-oil-can"></i>
+                        <span>AE</span>
+                    </div>
+                    <p>Decentralizing Energy. Empowering the World.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-telegram"></i></a>
+                        <a href="#"><i class="fab fa-discord"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h4>Platform</h4>
+                    <ul>
+                        <li><a href="#">Demo Account</a></li>
+                        <li><a href="#">Live Trading</a></li>
+                        <li><a href="#">Mobile App</a></li>
+                        <li><a href="#">API Documentation</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Legal</h4>
+                    <ul>
+                        <li><a href="terms.html">Terms of Service</a></li>
+                        <li><a href="privacy.html">Privacy Policy</a></li>
+                        <li><a href="disclosure.html">Risk Disclosure</a></li>
+                        <li><a href="#">Compliance</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 AE Platform. All rights reserved.</p>
+                <div class="footer-links">
+                    <a href="privacy.html">Privacy</a>
+                    <a href="terms.html">Terms</a>
+                    <a href="#">Cookies</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="{% static 'script.js'%}"></script>
+    <script>
+        // Enhanced FAQ functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // FAQ item toggle
+            const faqItems = document.querySelectorAll('.enhanced-faq-item');
+            faqItems.forEach(item => {
+                const question = item.querySelector('.enhanced-faq-question');
+                question.addEventListener('click', () => {
+                    const isActive = item.classList.contains('active');
+                    
+                    // Close all FAQ items
+                    faqItems.forEach(faq => faq.classList.remove('active'));
+                    
+                    // Open clicked item if it wasn't active
+                    if (!isActive) {
+                        item.classList.add('active');
+                    }
+                });
+            });
+
+            // Category filtering
+            const categoryTabs = document.querySelectorAll('.category-tab');
+            const faqSections = document.querySelectorAll('.faq-section');
+
+            categoryTabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const category = tab.dataset.category;
+                    
+                    // Update active tab
+                    categoryTabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    
+                    // Show/hide sections based on category
+                    faqSections.forEach(section => {
+                        if (category === 'all' || section.dataset.category === category) {
+                            section.style.display = 'block';
+                        } else {
+                            section.style.display = 'none';
+                        }
+                    });
+                });
+            });
+
+            // Search functionality
+            const searchInput = document.getElementById('faqSearch');
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                
+                faqItems.forEach(item => {
+                    const questionText = item.querySelector('.question-text').textContent.toLowerCase();
+                    const answerText = item.querySelector('.answer-content').textContent.toLowerCase();
+                    
+                    if (questionText.includes(searchTerm) || answerText.includes(searchTerm)) {
+                        item.style.display = 'block';
+                        item.closest('.faq-section').style.display = 'block';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+
+                // Hide empty sections
+                faqSections.forEach(section => {
+                    const visibleItems = section.querySelectorAll('.enhanced-faq-item[style="display: block"], .enhanced-faq-item:not([style*="display: none"])');
+                    if (visibleItems.length === 0 && searchTerm !== '') {
+                        section.style.display = 'none';
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

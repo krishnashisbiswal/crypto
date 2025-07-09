@@ -1,0 +1,755 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Add Cryptocurrency - Admin{% endblock %}
+
+{% block content %}
+<div class="add-crypto-container">
+    <!-- Header Section -->
+    <div class="page-header">
+        <div class="header-content">
+            <div class="header-icon">
+                <i class="fas fa-plus-circle"></i>
+            </div>
+            <div class="header-text">
+                <h1 class="page-title gradient-text">Add New Cryptocurrency</h1>
+                <p class="page-subtitle">Create a new cryptocurrency listing for the platform</p>
+            </div>
+        </div>
+        <div class="header-actions">
+            <a href="{% url 'trading:admin_crypto_list' %}" class="btn btn-outline">
+                <i class="fas fa-arrow-left"></i>
+                Back to List
+            </a>
+        </div>
+    </div>
+
+    <!-- Main Content Grid -->
+    <div class="content-grid">
+        <!-- Add Cryptocurrency Form -->
+        <div class="form-section">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title">
+                        <i class="fas fa-coins"></i>
+                        Cryptocurrency Details
+                    </h5>
+                    <div class="security-badge">
+                        <i class="fas fa-shield-alt"></i>
+                        Admin Only
+                    </div>
+                </div>
+                
+                <div class="card-body">
+                    <form method="post" class="add-crypto-form">
+                        {% csrf_token %}
+                        
+                        <div class="form-grid">
+                            <!-- Cryptocurrency Name -->
+                            <div class="form-group full-width">
+                                <label class="form-label">
+                                    <i class="fas fa-tag"></i>
+                                    Cryptocurrency Name
+                                </label>
+                                <div class="form-field">
+                                    {{ form.name }}
+                                </div>
+                                {% if form.name.help_text %}
+                                <div class="field-help">{{ form.name.help_text }}</div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Symbol -->
+                            <div class="form-group half-width">
+                                <label class="form-label">
+                                    <i class="fas fa-code"></i>
+                                    Symbol
+                                </label>
+                                <div class="form-field">
+                                    {{ form.symbol }}
+                                </div>
+                                {% if form.symbol.help_text %}
+                                <div class="field-help">{{ form.symbol.help_text }}</div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Initial Price -->
+                            <div class="form-group half-width">
+                                <label class="form-label">
+                                    <i class="fas fa-dollar-sign"></i>
+                                    Initial Price (USD)
+                                </label>
+                                <div class="form-field">
+                                    <div class="price-input-group">
+                                        <span class="currency-symbol">$</span>
+                                        {{ form.current_price }}
+                                    </div>
+                                </div>
+                                {% if form.current_price.help_text %}
+                                <div class="field-help">{{ form.current_price.help_text }}</div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Total Supply -->
+                            {% if form.total_supply %}
+                            <div class="form-group half-width">
+                                <label class="form-label">
+                                    <i class="fas fa-layer-group"></i>
+                                    Total Supply
+                                </label>
+                                <div class="form-field">
+                                    {{ form.total_supply }}
+                                </div>
+                                {% if form.total_supply.help_text %}
+                                <div class="field-help">{{ form.total_supply.help_text }}</div>
+                                {% endif %}
+                            </div>
+                            {% endif %}
+
+                            <!-- Market Cap -->
+                            {% if form.market_cap %}
+                            <div class="form-group half-width">
+                                <label class="form-label">
+                                    <i class="fas fa-chart-pie"></i>
+                                    Market Cap (USD)
+                                </label>
+                                <div class="form-field">
+                                    {{ form.market_cap }}
+                                </div>
+                                {% if form.market_cap.help_text %}
+                                <div class="field-help">{{ form.market_cap.help_text }}</div>
+                                {% endif %}
+                            </div>
+                            {% endif %}
+
+                            <!-- Description -->
+                            {% if form.description %}
+                            <div class="form-group full-width">
+                                <label class="form-label">
+                                    <i class="fas fa-align-left"></i>
+                                    Description (Optional)
+                                </label>
+                                <div class="form-field">
+                                    {{ form.description }}
+                                </div>
+                                {% if form.description.help_text %}
+                                <div class="field-help">{{ form.description.help_text }}</div>
+                                {% endif %}
+                            </div>
+                            {% endif %}
+
+                            <!-- Active Status -->
+                            {% if form.is_active %}
+                            <div class="form-group full-width">
+                                <label class="form-label">
+                                    <i class="fas fa-toggle-on"></i>
+                                    Status
+                                </label>
+                                <div class="checkbox-group">
+                                    <div class="checkbox-option">
+                                        {{ form.is_active }}
+                                        <label for="{{ form.is_active.id_for_label }}" class="checkbox-label">
+                                            <div class="checkbox-content">
+                                                <div class="checkbox-title">Active</div>
+                                                <div class="checkbox-desc">Make this cryptocurrency available for trading</div>
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Form Actions -->
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-success">
+                                <i class="fas fa-plus"></i>
+                                Add Cryptocurrency
+                            </button>
+                            <a href="{% url 'trading:admin_crypto_list' %}" class="btn btn-secondary">
+                                <i class="fas fa-times"></i>
+                                Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Information Panel -->
+        <div class="info-section">
+            <!-- Examples Card -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title">
+                        <i class="fas fa-lightbulb"></i>
+                        Cryptocurrency Examples
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="examples-list">
+                        <div class="example-item" onclick="fillExample('Bitcoin', 'BTC', '45000')">
+                            <div class="example-icon bitcoin">
+                                <i class="fab fa-bitcoin"></i>
+                            </div>
+                            <div class="example-content">
+                                <div class="example-name">Bitcoin</div>
+                                <div class="example-details">Symbol: BTC • Price: $45,000</div>
+                            </div>
+                            <div class="example-action">
+                                <i class="fas fa-arrow-right"></i>
+                            </div>
+                        </div>
+
+                        <div class="example-item" onclick="fillExample('Ethereum', 'ETH', '3200')">
+                            <div class="example-icon ethereum">
+                                <i class="fab fa-ethereum"></i>
+                            </div>
+                            <div class="example-content">
+                                <div class="example-name">Ethereum</div>
+                                <div class="example-details">Symbol: ETH • Price: $3,200</div>
+                            </div>
+                            <div class="example-action">
+                                <i class="fas fa-arrow-right"></i>
+                            </div>
+                        </div>
+
+                        <div class="example-item" onclick="fillExample('Tether', 'USDT', '1.00')">
+                            <div class="example-icon tether">
+                                <i class="fas fa-dollar-sign"></i>
+                            </div>
+                            <div class="example-content">
+                                <div class="example-name">Tether</div>
+                                <div class="example-details">Symbol: USDT • Price: $1.00</div>
+                            </div>
+                            <div class="example-action">
+                                <i class="fas fa-arrow-right"></i>
+                            </div>
+                        </div>
+
+                        <div class="example-item" onclick="fillExample('TRON', 'TRX', '0.08')">
+                            <div class="example-icon tron">
+                                <i class="fas fa-coins"></i>
+                            </div>
+                            <div class="example-content">
+                                <div class="example-name">TRON</div>
+                                <div class="example-details">Symbol: TRX • Price: $0.08</div>
+                            </div>
+                            <div class="example-action">
+                                <i class="fas fa-arrow-right"></i>
+                            </div>
+                        </div>
+
+                        <div class="example-item" onclick="fillExample('MyCustomCoin', 'MCC', '0.50')">
+                            <div class="example-icon custom">
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <div class="example-content">
+                                <div class="example-name">Custom Coin</div>
+                                <div class="example-details">Symbol: MCC • Price: $0.50</div>
+                            </div>
+                            <div class="example-action">
+                                <i class="fas fa-arrow-right"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="examples-note">
+                        <i class="fas fa-info-circle"></i>
+                        Click on any example to auto-fill the form
+                    </div>
+                </div>
+            </div>
+
+            <!-- Guidelines Card -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title">
+                        <i class="fas fa-clipboard-list"></i>
+                        Guidelines
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="guidelines-list">
+                        <div class="guideline-item">
+                            <div class="guideline-icon">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <div class="guideline-text">
+                                <strong>Name:</strong> Use the full, official name of the cryptocurrency
+                            </div>
+                        </div>
+                        <div class="guideline-item">
+                            <div class="guideline-icon">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <div class="guideline-text">
+                                <strong>Symbol:</strong> Use standard uppercase abbreviations (e.g., BTC, ETH)
+                            </div>
+                        </div>
+                        <div class="guideline-item">
+                            <div class="guideline-icon">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <div class="guideline-text">
+                                <strong>Price:</strong> Enter current market price in USD
+                            </div>
+                        </div>
+                        <div class="guideline-item">
+                            <div class="guideline-icon">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <div class="guideline-text">
+                                <strong>Supply:</strong> Total number of coins that will ever exist
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Important Notes -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        Important Notes
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-warning">
+                        <div class="alert-content">
+                            <i class="fas fa-bell"></i>
+                            <div>
+                                <h6>Market Impact</h6>
+                                <p>New cryptocurrencies will be immediately available for user deposits and trading.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="alert alert-info">
+                        <div class="alert-content">
+                            <i class="fas fa-users"></i>
+                            <div>
+                                <h6>User Visibility</h6>
+                                <p>Active cryptocurrencies will appear in user deposit forms and portfolio displays.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+/* Add Cryptocurrency Page Styles */
+.add-crypto-container {
+    padding: 24px;
+    min-height: 100vh;
+}
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 32px;
+    padding: 24px;
+    background: var(--white-bg);
+    border-radius: 16px;
+    box-shadow: var(--shadow-light);
+    border: 1px solid var(--border-color);
+}
+
+.header-content {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.header-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 16px;
+    background: var(--success-gradient);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    color: white;
+    box-shadow: 0 4px 15px rgba(79, 172, 254, 0.3);
+}
+
+.header-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.page-subtitle {
+    font-size: 16px;
+    color: var(--text-secondary);
+    margin: 4px 0 0;
+}
+
+.header-actions {
+    display: flex;
+    gap: 12px;
+}
+
+/* Content Grid */
+.content-grid {
+    display: grid;
+    grid-template-columns: 1fr 400px;
+    gap: 24px;
+}
+
+/* Form Styling */
+.security-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    background: rgba(245, 158, 11, 0.1);
+    color: #92400e;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+    border: 1px solid rgba(245, 158, 11, 0.2);
+}
+
+.add-crypto-form {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+}
+
+.form-group.full-width {
+    grid-column: 1 / -1;
+}
+
+.form-group.half-width {
+    grid-column: span 1;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.form-field {
+    position: relative;
+}
+
+.price-input-group {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.currency-symbol {
+    position: absolute;
+    left: 12px;
+    color: var(--text-secondary);
+    font-weight: 600;
+    z-index: 1;
+}
+
+.form-field input[type="number"] {
+    padding-left: 32px !important;
+}
+
+.field-help {
+    font-size: 12px;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Checkbox Styling */
+.checkbox-group {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.checkbox-option {
+    position: relative;
+}
+
+.checkbox-option input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: var(--white-bg);
+}
+
+.checkbox-option input[type="checkbox"]:checked + .checkbox-label {
+    border-color: rgba(16, 185, 129, 0.5);
+    background: rgba(16, 185, 129, 0.05);
+}
+
+.checkbox-content {
+    flex: 1;
+}
+
+.checkbox-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 2px;
+}
+
+.checkbox-desc {
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+.form-actions {
+    display: flex;
+    gap: 12px;
+    padding-top: 8px;
+}
+
+/* Examples Section */
+.examples-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.example-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    background: var(--light-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.example-item:hover {
+    background: var(--white-bg);
+    border-color: rgba(102, 126, 234, 0.3);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-light);
+}
+
+.example-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 16px;
+    flex-shrink: 0;
+}
+
+.example-icon.bitcoin {
+    background: linear-gradient(135deg, #f7931a 0%, #ff9500 100%);
+}
+
+.example-icon.ethereum {
+    background: linear-gradient(135deg, #627eea 0%, #3c3c3d 100%);
+}
+
+.example-icon.tether {
+    background: linear-gradient(135deg, #26a17b 0%, #50af95 100%);
+}
+
+.example-icon.tron {
+    background: linear-gradient(135deg, #ef2929 0%, #ff6565 100%);
+}
+
+.example-icon.custom {
+    background: var(--primary-gradient);
+}
+
+.example-content {
+    flex: 1;
+}
+
+.example-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 2px;
+}
+
+.example-details {
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+.example-action {
+    color: var(--text-secondary);
+    font-size: 12px;
+}
+
+.examples-note {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 16px;
+    padding: 12px;
+    background: rgba(59, 130, 246, 0.05);
+    border-radius: 8px;
+    font-size: 12px;
+    color: #1e40af;
+}
+
+/* Guidelines Section */
+.guidelines-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.guideline-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px;
+    background: var(--light-bg);
+    border-radius: 8px;
+}
+
+.guideline-icon {
+    color: #16a34a;
+    font-size: 16px;
+    margin-top: 2px;
+}
+
+.guideline-text {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.4;
+}
+
+/* Alert Styling */
+.alert {
+    display: flex;
+    gap: 12px;
+    padding: 16px;
+    border-radius: 12px;
+    border-left: 4px solid;
+    margin-bottom: 16px;
+}
+
+.alert-content {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+}
+
+.alert-content h6 {
+    margin: 0 0 4px;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.alert-content p {
+    margin: 0;
+    font-size: 13px;
+}
+
+@media (max-width: 1024px) {
+    .content-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .add-crypto-container {
+        padding: 16px;
+    }
+    
+    .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+    
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .form-group.half-width {
+        grid-column: 1;
+    }
+    
+    .form-actions {
+        flex-direction: column;
+    }
+}
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function fillExample(name, symbol, price) {
+    // Fill form fields with example data
+    const nameField = document.querySelector('input[name="name"]');
+    const symbolField = document.querySelector('input[name="symbol"]');
+    const priceField = document.querySelector('input[name="current_price"]');
+    
+    if (nameField) nameField.value = name;
+    if (symbolField) symbolField.value = symbol;
+    if (priceField) priceField.value = price;
+    
+    // Add visual feedback
+    const filledFields = [nameField, symbolField, priceField].filter(field => field);
+    filledFields.forEach(field => {
+        field.style.borderColor = 'rgba(16, 185, 129, 0.5)';
+        field.style.backgroundColor = 'rgba(16, 185, 129, 0.05)';
+        
+        setTimeout(() => {
+            field.style.borderColor = '';
+            field.style.backgroundColor = '';
+        }, 2000);
+    });
+    
+    // Show success message
+    const examples = document.querySelector('.examples-note');
+    const originalText = examples.innerHTML;
+    examples.innerHTML = '<i class="fas fa-check-circle"></i> Form filled with ' + name + ' data!';
+    examples.style.background = 'rgba(16, 185, 129, 0.1)';
+    examples.style.color = '#065f46';
+    
+    setTimeout(() => {
+        examples.innerHTML = originalText;
+        examples.style.background = '';
+        examples.style.color = '';
+    }, 3000);
+}
+</script>
+{% endblock %}

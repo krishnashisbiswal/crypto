@@ -1,0 +1,849 @@
+{% extends 'base.html' %}
+
+{% block title %}Referral Dashboard - Crypto Platform{% endblock %}
+
+{% block content %}
+<div class="referral-container">
+    <!-- Header Section -->
+    <div class="page-header">
+        <div class="header-content">
+            <div class="header-icon">
+                <i class="fas fa-users"></i>
+            </div>
+            <div class="header-text">
+                <h1 class="page-title gradient-text">Referral Dashboard</h1>
+                <p class="page-subtitle">Earn commissions by referring new users</p>
+            </div>
+        </div>
+        <div class="header-actions">
+            <button class="btn btn-primary" onclick="copyReferralLink()">
+                <i class="fas fa-share"></i>
+                Share Link
+            </button>
+        </div>
+    </div>
+
+    <!-- Debug Information (remove in production) -->
+    <div class="card debug-card">
+        <div class="card-header">
+            <h5 class="card-title">
+                <i class="fas fa-bug"></i>
+                Debug Information
+            </h5>
+        </div>
+        <div class="card-body">
+            <div class="debug-grid">
+                <div class="debug-item">
+                    <span class="debug-label">User has profile:</span>
+                    <span class="debug-value">{{ debug_info.user_has_profile }}</span>
+                </div>
+                <div class="debug-item">
+                    <span class="debug-label">Referral code:</span>
+                    <span class="debug-value">{{ debug_info.referral_code }}</span>
+                </div>
+                <div class="debug-item">
+                    <span class="debug-label">Total commissions:</span>
+                    <span class="debug-value">{{ debug_info.total_commissions_count }}</span>
+                </div>
+                <div class="debug-item">
+                    <span class="debug-label">Direct referrals:</span>
+                    <span class="debug-value">{{ debug_info.direct_referrals_count }}</span>
+                </div>
+                <div class="debug-item">
+                    <span class="debug-label">Recent commissions:</span>
+                    <span class="debug-value">{{ debug_info.recent_commissions_count }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Referral Stats -->
+    <div class="stats-grid">
+        <div class="stats-card total-commissions">
+            <div class="stats-icon">
+                <i class="fas fa-dollar-sign"></i>
+            </div>
+            <div class="stats-content">
+                <div class="stats-number">${{ total_commissions|floatformat:2 }}</div>
+                <div class="stats-label">Total Commissions</div>
+                <div class="stats-trend positive">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>All Time</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="stats-card level-1">
+            <div class="stats-icon">
+                <i class="fas fa-medal"></i>
+            </div>
+            <div class="stats-content">
+                <div class="stats-number">${{ level_commissions.1|floatformat:2 }}</div>
+                <div class="stats-label">Level 1 (5%)</div>
+                <div class="stats-trend level">
+                    <i class="fas fa-star"></i>
+                    <span>Direct</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="stats-card level-2">
+            <div class="stats-icon">
+                <i class="fas fa-award"></i>
+            </div>
+            <div class="stats-content">
+                <div class="stats-number">${{ level_commissions.2|floatformat:2 }}</div>
+                <div class="stats-label">Level 2 (3%)</div>
+                <div class="stats-trend level">
+                    <i class="fas fa-star-half-alt"></i>
+                    <span>2nd Tier</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="stats-card level-3">
+            <div class="stats-icon">
+                <i class="fas fa-trophy"></i>
+            </div>
+            <div class="stats-content">
+                <div class="stats-number">${{ level_commissions.3|floatformat:2 }}</div>
+                <div class="stats-label">Level 3 (2%)</div>
+                <div class="stats-trend level">
+                    <i class="fas fa-star"></i>
+                    <span>3rd Tier</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Referral Link Section -->
+    <div class="card referral-link-card">
+        <div class="card-header">
+            <h5 class="card-title">
+                <i class="fas fa-link"></i>
+                Your Referral Link
+            </h5>
+            <div class="referral-badge">
+                <i class="fas fa-gift"></i>
+                Earn up to 5%
+            </div>
+        </div>
+        <div class="card-body">
+            {% if user_profile and user_profile.referral_code %}
+            <div class="referral-link-section">
+                <div class="input-group">
+                    <input type="text" class="form-control referral-input" value="{{ referral_url }}" id="referralLink" readonly>
+                    <button class="btn btn-primary copy-btn" type="button" onclick="copyReferralLink()">
+                        <i class="fas fa-copy"></i>
+                        Copy
+                    </button>
+                </div>
+                
+                <div class="referral-info-grid">
+                    <div class="info-item">
+                        <div class="info-label">Your Referral Code</div>
+                        <div class="info-value">{{ user_profile.referral_code }}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Total Referrals</div>
+                        <div class="info-value">{{ total_referrals }}</div>
+                    </div>
+                </div>
+                
+                <div class="commission-info">
+                    <p class="commission-text">
+                        <i class="fas fa-info-circle"></i>
+                        Share this link to earn commissions: <strong>5%</strong> from direct referrals, 
+                        <strong>3%</strong> from level 2, <strong>2%</strong> from level 3!
+                    </p>
+                </div>
+            </div>
+            {% else %}
+            <div class="alert alert-warning">
+                <div class="alert-content">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <div>
+                        <h6>No Referral Code Found</h6>
+                        <p>Please contact support to get your referral code.</p>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Main Content Grid -->
+    <div class="content-grid">
+        <!-- Direct Referrals Section -->
+        <div class="card referrals-card">
+            <div class="card-header">
+                <h5 class="card-title">
+                    <i class="fas fa-user-friends"></i>
+                    Direct Referrals ({{ total_referrals }})
+                </h5>
+                <div class="card-actions">
+                    <button class="btn btn-outline">
+                        <i class="fas fa-download"></i>
+                        Export
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+                {% if direct_referrals %}
+                <div class="table-container">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>User Info</th>
+                                <th>Joined Date</th>
+                                <th>KYC Status</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for referral in direct_referrals %}
+                            <tr class="table-row">
+                                <td class="user-info">
+                                    <div class="user-avatar">
+                                        <i class="fas fa-user"></i>
+                                    </div>
+                                    <div class="user-details">
+                                        <div class="user-name">{{ referral.user.username }}</div>
+                                        <div class="user-email">{{ referral.user.email }}</div>
+                                    </div>
+                                </td>
+                                <td class="join-date">{{ referral.created_at|date:"M d, Y" }}</td>
+                                <td class="kyc-status">
+                                    {% if referral.kyc_status == 'approved' %}
+                                    <span class="badge badge-success">
+                                        <i class="fas fa-check"></i>
+                                        Approved
+                                    </span>
+                                    {% elif referral.kyc_status == 'pending' %}
+                                    <span class="badge badge-warning">
+                                        <i class="fas fa-clock"></i>
+                                        Pending
+                                    </span>
+                                    {% else %}
+                                    <span class="badge badge-danger">
+                                        <i class="fas fa-times"></i>
+                                        Rejected
+                                    </span>
+                                    {% endif %}
+                                </td>
+                                <td class="active-status">
+                                    {% if referral.is_active %}
+                                    <span class="badge badge-success">
+                                        <i class="fas fa-check-circle"></i>
+                                        Active
+                                    </span>
+                                    {% else %}
+                                    <span class="badge badge-secondary">
+                                        <i class="fas fa-pause-circle"></i>
+                                        Inactive
+                                    </span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="empty-state">
+                    <div class="empty-icon">
+                        <i class="fas fa-user-plus"></i>
+                    </div>
+                    <h3>No Direct Referrals Yet!</h3>
+                    <p>Share your referral link to start earning commissions. When someone registers using your link and makes a deposit, you'll earn:</p>
+                    <ul class="commission-list">
+                        <li><strong>5%</strong> commission from their deposits (Level 1)</li>
+                        <li><strong>3%</strong> commission from people they refer (Level 2)</li>
+                        <li><strong>2%</strong> commission from people their referrals refer (Level 3)</li>
+                    </ul>
+                    <button class="btn btn-primary" onclick="copyReferralLink()">
+                        <i class="fas fa-share"></i>
+                        Start Sharing Now
+                    </button>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Commission History -->
+        <div class="card commissions-card">
+            <div class="card-header">
+                <h5 class="card-title">
+                    <i class="fas fa-history"></i>
+                    Recent Commissions
+                </h5>
+                <div class="card-actions">
+                    <button class="btn btn-outline">
+                        <i class="fas fa-filter"></i>
+                        Filter
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+                {% if recent_commissions %}
+                <div class="table-container">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>From User</th>
+                                <th>Level</th>
+                                <th>Deposit</th>
+                                <th>Rate</th>
+                                <th>Commission</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for commission in recent_commissions %}
+                            <tr class="table-row">
+                                <td class="commission-date">{{ commission.created_at|date:"M d, Y H:i" }}</td>
+                                <td class="commission-user">{{ commission.referred_user.username }}</td>
+                                <td class="commission-level">
+                                    <span class="level-badge level-{{ commission.level }}">
+                                        Level {{ commission.level }}
+                                    </span>
+                                </td>
+                                <td class="deposit-amount">${{ commission.deposit.amount|floatformat:2 }}</td>
+                                <td class="commission-rate">
+                                    {% if commission.level == 1 %}5%
+                                    {% elif commission.level == 2 %}3%
+                                    {% else %}2%{% endif %}
+                                </td>
+                                <td class="commission-earned">
+                                    <span class="earnings">${{ commission.amount|floatformat:2 }}</span>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="empty-state">
+                    <div class="empty-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3>No Commissions Earned Yet!</h3>
+                    <p>Commissions are generated when:</p>
+                    <ol class="commission-steps">
+                        <li>Someone registers using your referral link</li>
+                        <li>They make a deposit that gets approved by admin</li>
+                        <li>You automatically earn commission based on their deposit amount</li>
+                    </ol>
+                    <p><strong>Start sharing your referral link above to begin earning!</strong></p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+/* Referral Dashboard Specific Styles */
+.referral-container {
+    padding: 24px;
+    min-height: 100vh;
+}
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 32px;
+    padding: 24px;
+    background: var(--white-bg);
+    border-radius: 16px;
+    box-shadow: var(--shadow-light);
+    border: 1px solid var(--border-color);
+}
+
+.header-content {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.header-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 16px;
+    background: var(--primary-gradient);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    color: white;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.header-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.page-subtitle {
+    font-size: 16px;
+    color: var(--text-secondary);
+    margin: 4px 0 0;
+}
+
+.header-actions {
+    display: flex;
+    gap: 12px;
+}
+
+/* Debug Card */
+.debug-card {
+    margin-bottom: 32px;
+}
+
+.debug-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 16px;
+}
+
+.debug-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    background: var(--light-bg);
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+}
+
+.debug-label {
+    font-weight: 500;
+    color: var(--text-secondary);
+}
+
+.debug-value {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+/* Stats Grid */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+    margin-bottom: 32px;
+}
+
+.stats-card {
+    background: var(--white-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: var(--shadow-light);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    transition: all 0.3s ease;
+}
+
+.stats-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-medium);
+}
+
+.stats-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    color: white;
+    flex-shrink: 0;
+}
+
+.stats-card.total-commissions .stats-icon {
+    background: var(--success-gradient);
+}
+
+.stats-card.level-1 .stats-icon {
+    background: var(--primary-gradient);
+}
+
+.stats-card.level-2 .stats-icon {
+    background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
+}
+
+.stats-card.level-3 .stats-icon {
+    background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%);
+}
+
+.stats-content {
+    flex: 1;
+}
+
+.stats-number {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+}
+
+.stats-label {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+}
+
+.stats-trend {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.stats-trend.positive {
+    color: #16a34a;
+}
+
+.stats-trend.level {
+    color: var(--text-secondary);
+}
+
+/* Referral Link Card */
+.referral-link-card {
+    margin-bottom: 32px;
+}
+
+.referral-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    background: rgba(16, 185, 129, 0.1);
+    color: #065f46;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+    border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.referral-link-section {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.input-group {
+    display: flex;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+}
+
+.referral-input {
+    border: none !important;
+    background: var(--light-bg) !important;
+    color: var(--text-primary) !important;
+    border-radius: 0 !important;
+}
+
+.referral-input:focus {
+    box-shadow: none !important;
+}
+
+.copy-btn {
+    border-radius: 0 !important;
+    border: none !important;
+}
+
+.referral-info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.info-item {
+    padding: 16px;
+    background: var(--light-bg);
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+}
+
+.info-label {
+    font-size: 12px;
+    color: var(--text-secondary);
+    font-weight: 500;
+    margin-bottom: 4px;
+}
+
+.info-value {
+    font-size: 16px;
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.commission-info {
+    padding: 16px;
+    background: rgba(59, 130, 246, 0.05);
+    border-radius: 12px;
+    border: 1px solid rgba(59, 130, 246, 0.1);
+}
+
+.commission-text {
+    margin: 0;
+    color: #1e40af;
+    font-size: 14px;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+}
+
+/* Content Grid */
+.content-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+}
+
+.card-actions {
+    display: flex;
+    gap: 12px;
+}
+
+/* Table Styling */
+.table-container {
+    overflow-x: auto;
+}
+
+.table-row:hover {
+    background: var(--light-bg);
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.user-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: var(--light-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-secondary);
+}
+
+.user-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.user-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.user-email {
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+/* Badges */
+.badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.badge-success {
+    background: rgba(16, 185, 129, 0.1);
+    color: #065f46;
+}
+
+.badge-warning {
+    background: rgba(245, 158, 11, 0.1);
+    color: #92400e;
+}
+
+.badge-danger {
+    background: rgba(239, 68, 68, 0.1);
+    color: #991b1b;
+}
+
+.badge-secondary {
+    background: var(--light-bg);
+    color: var(--text-secondary);
+}
+
+.level-badge {
+    padding: 4px 8px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.level-badge.level-1 {
+    background: rgba(102, 126, 234, 0.1);
+    color: #4338ca;
+}
+
+.level-badge.level-2 {
+    background: rgba(6, 182, 212, 0.1);
+    color: #0891b2;
+}
+
+.level-badge.level-3 {
+    background: rgba(245, 158, 11, 0.1);
+    color: #d97706;
+}
+
+.earnings {
+    color: #16a34a;
+    font-weight: 600;
+}
+
+/* Empty State */
+.empty-state {
+    text-align: center;
+    padding: 48px 24px;
+}
+
+.empty-icon {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 24px;
+    border-radius: 16px;
+    background: var(--primary-gradient);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    color: white;
+}
+
+.empty-state h3 {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0 0 12px;
+}
+
+.empty-state p {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin: 0 0 16px;
+}
+
+.commission-list, .commission-steps {
+    text-align: left;
+    max-width: 400px;
+    margin: 0 auto 24px;
+}
+
+.commission-list li, .commission-steps li {
+    margin-bottom: 8px;
+    color: var(--text-secondary);
+}
+
+/* Alert Styling */
+.alert {
+    display: flex;
+    gap: 12px;
+    padding: 16px;
+    border-radius: 12px;
+    border-left: 4px solid;
+}
+
+.alert-content {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+}
+
+.alert-content h6 {
+    margin: 0 0 4px;
+    font-weight: 600;
+}
+
+.alert-content p {
+    margin: 0;
+    font-size: 14px;
+}
+
+@media (max-width: 1024px) {
+    .content-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .referral-info-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .referral-container {
+        padding: 16px;
+    }
+    
+    .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .debug-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function copyReferralLink() {
+    const referralLink = document.getElementById('referralLink');
+    if (!referralLink) return;
+    
+    referralLink.select();
+    referralLink.setSelectionRange(0, 99999);
+    
+    try {
+        document.execCommand('copy');
+        
+        // Find all copy buttons and update them
+        const buttons = document.querySelectorAll('.copy-btn, .btn[onclick="copyReferralLink()"]');
+        buttons.forEach(button => {
+            const originalText = button.innerHTML;
+            button.innerHTML = '<i class="fas fa-check"></i> Copied!';
+            button.classList.remove('btn-primary', 'btn-outline');
+            button.classList.add('btn-success');
+            
+            setTimeout(() => {
+                button.innerHTML = originalText;
+                button.classList.remove('btn-success');
+                button.classList.add('btn-primary');
+            }, 2000);
+        });
+    } catch (err) {
+        console.error('Failed to copy text: ', err);
+    }
+}
+</script>
+{% endblock %}
