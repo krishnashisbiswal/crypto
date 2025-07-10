@@ -9,6 +9,8 @@ urlpatterns = [
     
     # Admin URLs
     path('admin/list/', views.AdminDepositListView.as_view(), name='admin_list'),
-    path('admin/approve/<int:deposit_id>/', views.approve_deposit, name='admin_approve'),
-    path('<int:deposit_id>/update-status/', views.update_deposit_status, name='update_status'),
+    # In your deposits/urls.py
+    path('admin/deposits/<int:deposit_id>/approve/', views.admin_approve_deposit, name='admin_approve'),
+    path('admin/deposits/<int:deposit_id>/reject/', views.admin_reject_deposit, name='admin_reject'),
+    path('admin/list/', views.admin_deposit_list, name='admin_deposit_list'),
 ]

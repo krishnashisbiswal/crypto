@@ -23,21 +23,40 @@ def deposit_create(request):
         form = DepositForm()
     return render(request, 'deposits/create.html', {'form': form})
 
+from django.db.models import Sum
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render
+from .models import Deposit
+
 @login_required
 def deposit_list(request):
-    deposits = Deposit.objects.filter(user=request.user).order_by('-created_at')
-    pending_count = deposits.filter(status='pending').count()
-    approved_count = deposits.filter(status='approved').count()
-    rejected_count = deposits.filter(status='rejected').count()
-    total_count = deposits.count()
+    if request.user.is_superuser:
+        # Admin sees all deposits
+        deposits = Deposit.objects.all()
+        template_name = 'deposits/admin/list.html'
+    else:
+        # Regular user sees only their deposits
+        deposits = Deposit.objects.filter(user=request.user)
+        
+        template_name = 'deposits/list.html'
 
-    return render(request, 'deposits/list.html', {
+    context = {
         'deposits': deposits,
-        'pending_count': pending_count,
-        'approved_count': approved_count,
-        'rejected_count': rejected_count,
-        'total_count': total_count
-    })
+        'total_deposits': deposits.count(),
+        'pending_count': deposits.filter(status='pending').count(),
+        'approved_count': deposits.filter(status='approved').count(),
+        'rejected_count': deposits.filter(status='rejected').count(),
+        'total_approved_value': deposits.filter(status='approved').aggregate(total=Sum('amount'))['total'] or 0,
+    }
+    return render(request, template_name, context)
+
+
+
+@user_passes_test(lambda u: u.is_superuser)
+def admin_deposit_list(request):
+    # This is for superusers to see all deposits
+    deposits = Deposit.objects.all()
+    return render(request, 'deposits/admin/list.html', {'deposits': deposits})
 
 # Admin Views
 class AdminDepositListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
@@ -51,7 +70,7 @@ class AdminDepositListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
     def get_queryset(self):
         return Deposit.objects.all().select_related('user', 'cryptocurrency').order_by('-created_at')
 
-@user_passes_test(lambda u: u.is_staff)
+@user_passes_test(lambda u: u.is_superuser)
 def approve_deposit(request, deposit_id):
     deposit = get_object_or_404(Deposit, pk=deposit_id)
     
@@ -103,36 +122,32 @@ def process_referral_commissions(deposit):
         current_referrer = current_referrer.referred_by
         level += 1
 
-@login_required
-@user_passes_test(lambda u: u.is_superuser)
-def update_deposit_status(request, deposit_id):
+def admin_approve_deposit(request, deposit_id):
     deposit = get_object_or_404(Deposit, id=deposit_id)
+    deposit.status = 'approved'
+    deposit.save()
+    messages.success(request, f'Deposit of ${deposit.amount} approved for {deposit.user.username}')
+    return redirect('deposits:admin_list')
 
-    # Only allow if user is admin/staff or deposit owner
-    if not (request.user.is_staff or deposit.user == request.user.is_superuser):
-        messages.error(request, "You don't have permission to perform this action.")
-        return redirect('deposits:deposit_list')
+def admin_reject_deposit(request, deposit_id):
+    deposit = get_object_or_404(Deposit, id=deposit_id)
+    deposit.status = 'rejected'
+    deposit.save()
+    messages.error(request, f'Deposit of ${deposit.amount} rejected for {deposit.user.username}')
+    return redirect('deposits:admin_list')
 
-    if request.method == 'POST':
-        status = request.POST.get('status')
-        if status in ['approved', 'rejected']:
-            deposit.status = status
-            deposit.save()
-            messages.success(request, f"Deposit {status.capitalize()} successfully.")
-        else:
-            messages.error(request, "Invalid status value.")
-    return redirect('deposits:deposit_list')
 
-def is_admin(user):
-    return user.is_staff or user.is_superuser
+# @user_passes_test(lambda u: u.is_staff)
+# def admin_update_deposit_status(request, deposit_id):
+#     deposit = get_object_or_404(Deposit, id=deposit_id)
 
-@login_required
-def user_deposits_list(request):
-    deposits = Deposit.objects.filter(user=request.user)
-    return render(request, 'deposits/list.html', {'deposits': deposits})
+#     if request.method == 'POST':
+#         status = request.POST.get('status')
+#         if status in ['approved', 'rejected']:
+#             deposit.status = status
+#             deposit.save()
+#             messages.success(request, f"Deposit {status.capitalize()} successfully.")
+#         else:
+#             messages.error(request, "Invalid status value.")
 
-@login_required
-@user_passes_test(is_admin)
-def admin_deposits_list(request):
-    deposits = Deposit.objects.all()
-    return render(request, 'deposits/admin/list.html', {'deposits': deposits})
+#     return redirect('deposits:admin_deposit_list')
