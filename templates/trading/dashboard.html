@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-
+{% load static %}
 {% block title %}Dashboard - Crypto Platform{% endblock %}
 
 {% block content %}
@@ -106,7 +106,7 @@
                             <tr class="table-row">
                                 <td class="crypto-info">
                                     <div class="crypto-avatar">
-                                        <img src="https://via.placeholder.com/32/{{ portfolio.cryptocurrency.symbol|lower }}" alt="{{ portfolio.cryptocurrency.symbol }}">
+                                        <img src="{% static 'image/cryptocurrency-coin-icon-png.png' %}" alt="{{ portfolio.cryptocurrency.symbol }}">
                                     </div>
                                     <div class="crypto-details">
                                         <div class="crypto-name">{{ portfolio.cryptocurrency.name }}</div>
@@ -134,9 +134,6 @@
                                 <td class="actions">
                                     <button class="action-btn chart-btn" onclick="showChart({{ portfolio.cryptocurrency.id }})">
                                         <i class="fas fa-chart-area"></i>
-                                    </button>
-                                    <button class="action-btn trade-btn">
-                                        <i class="fas fa-exchange-alt"></i>
                                     </button>
                                 </td>
                             </tr>

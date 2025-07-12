@@ -4,28 +4,71 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic import ListView, CreateView, UpdateView
 from django.http import JsonResponse
 from django.contrib import messages
-from django.db.models import Sum
-from .models import Cryptocurrency, Portfolio, PriceHistory
+from .models import Cryptocurrency,PriceHistory
 from .forms import CryptocurrencyForm, PriceUpdateForm
-import json
 from decimal import Decimal
+from deposits.models import Deposit , Cryptocurrency
+from django.utils.timezone import now
 def is_staff(user):
     return user.is_staff
 
 @login_required
 def dashboard(request):
-    portfolios = Portfolio.objects.filter(user=request.user).select_related('cryptocurrency')
-    total_value = sum([p.current_value for p in portfolios])
-    total_invested = sum([p.total_invested for p in portfolios])
-    total_profit_loss = total_value - total_invested
-    
+    user = request.user
+    deposits = Deposit.objects.filter(user=user, status='approved')
+
+    portfolio_dict = {}
+
+    for dep in deposits:
+        crypto = dep.cryptocurrency
+        symbol = crypto.symbol
+
+        if symbol not in portfolio_dict:
+            portfolio_dict[symbol] = {
+                'cryptocurrency': crypto,
+                'balance': Decimal('0'),
+                'total_invested': Decimal('0'),
+            }
+
+        portfolio_dict[symbol]['balance'] += dep.coin_quantity
+        portfolio_dict[symbol]['total_invested'] += dep.amount
+
+    portfolios = []
+    total_value = Decimal('0')
+    total_invested = Decimal('0')
+    total_profit_loss = Decimal('0')
+
+    for data in portfolio_dict.values():
+        crypto = data['cryptocurrency']
+        price = Decimal(crypto.current_price)
+        balance = data['balance']
+        invested = data['total_invested']
+        current_value = price * balance
+        profit_loss = current_value - invested
+        profit_loss_percentage = (profit_loss / invested * 100) if invested > 0 else Decimal('0')
+
+        data.update({
+            'current_price': price,
+            'current_value': current_value,
+            'profit_loss': profit_loss,
+            'profit_loss_percentage': profit_loss_percentage,
+        })
+
+        portfolios.append(data)
+        total_value += current_value
+        total_invested += invested
+        total_profit_loss += profit_loss
+
+    total_profit_loss_percentage = (total_profit_loss / total_invested * 100) if total_invested > 0 else Decimal('0')
+
     context = {
         'portfolios': portfolios,
         'total_value': total_value,
         'total_invested': total_invested,
         'total_profit_loss': total_profit_loss,
-        'total_profit_loss_percentage': (total_profit_loss / total_invested * 100) if total_invested > 0 else 0,
+        'total_profit_loss_percentage': total_profit_loss_percentage,
     }
+
     return render(request, 'trading/dashboard.html', context)
 
 @login_required

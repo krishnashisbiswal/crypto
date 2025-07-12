@@ -8,6 +8,7 @@ from .models import Deposit
 from .forms import DepositForm
 from trading.models import Portfolio
 from referrals.models import ReferralCommission
+from django.db.models import Sum
 
 @login_required
 def deposit_create(request):
@@ -16,19 +17,18 @@ def deposit_create(request):
         if form.is_valid():
             deposit = form.save(commit=False)
             deposit.user = request.user
+
+            current_price = deposit.cryptocurrency.current_price
+            deposit.price_at_deposit = current_price
+            deposit.coin_quantity = deposit.amount / current_price
+
             deposit.save()
-            messages.success(request, 'Deposit request submitted successfully!')
+            messages.success(request, 'Deposit submitted successfully!')
             return redirect('deposits:deposit_list')
     else:
         form = DepositForm()
     return render(request, 'deposits/create.html', {'form': form})
 
-from django.db.models import Sum
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
-from .models import Deposit
-
-@login_required
 def deposit_list(request):
     if request.user.is_superuser:
         # Admin sees all deposits
