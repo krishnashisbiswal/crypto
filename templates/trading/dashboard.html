@@ -78,11 +78,12 @@
     <div class="main-content">
         <div class="content-card">
             <div class="card-header">
-                {% comment %} <h2 class="card-title">Your Holdings</h2>
+                <h2 class="card-title">Your Holdings</h2>
                 <div class="card-actions">
-                    <button class="btn btn-outline">Export</button>
-                    <button class="btn btn-primary" >Add New</button>
-                </div> {% endcomment %}
+                    <a href="{% url 'deposits:deposit_create' %}" class="btn btn-primary">
+                        <i class="fas fa-wallet"></i> Add Deposit
+                    </a>
+                </div>
             </div>
             
             <div class="card-content">
@@ -114,7 +115,7 @@
                                     </div>
                                 </td>
                                 <td class="balance">{{ portfolio.balance|floatformat:8 }}</td>
-                                <td class="price">₹{{ portfolio.cryptocurrency.current_price|floatformat:8 }}</td>
+                                <td class="price">₹{{ portfolio.current_price|floatformat:8 }}</td>
                                 <td class="value">₹{{ portfolio.current_value|floatformat:2 }}</td>
                                 <td class="invested">₹{{ portfolio.total_invested|floatformat:2 }}</td>
                                 <td class="pnl">
@@ -128,7 +129,7 @@
                                 <td class="change-24h">
                                     <span class="change-badge {% if portfolio.cryptocurrency.price_change_24h >= 0 %}positive{% else %}negative{% endif %}">
                                         <i class="fas fa-arrow-{% if portfolio.cryptocurrency.price_change_24h >= 0 %}up{% else %}down{% endif %}"></i>
-                                        {{ portfolio.cryptocurrency.price_change_24h|floatformat:2 }}%
+                                        {{ portfolio.price_change_24h|floatformat:2 }}%
                                     </span>
                                 </td>
                                 <td class="actions">
@@ -637,7 +638,8 @@ function showChart(cryptoId) {
                             text: `Current Price: ₹${data.current_price} (${data.price_change > 0 ? '+' : ''}${data.price_change}%)`
                         },
                         legend: {
-                            display: false
+                            display: true,
+                            position: 'top',    
                         }
                     },
                     scales: {

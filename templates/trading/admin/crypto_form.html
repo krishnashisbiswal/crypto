@@ -4,6 +4,7 @@
 {% block title %}Add Cryptocurrency - Admin{% endblock %}
 
 {% block content %}
+
 <div class="add-crypto-container">
     <!-- Header Section -->
     <div class="page-header">
@@ -39,11 +40,26 @@
                         Admin Only
                     </div>
                 </div>
-                
+
                 <div class="card-body">
                     <form method="post" class="add-crypto-form">
                         {% csrf_token %}
-                        
+
+                        {% if form.errors %}
+                        <div class="alert alert-danger">
+                            <ul>
+                                {% for field in form %}
+                                    {% for error in field.errors %}
+                                        <li><strong>{{ field.label }}:</strong> {{ error }}</li>
+                                    {% endfor %}
+                                {% endfor %}
+                                {% for error in form.non_field_errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        {% endif %}
+
                         <div class="form-grid">
                             <!-- Cryptocurrency Name -->
                             <div class="form-group full-width">
@@ -54,9 +70,6 @@
                                 <div class="form-field">
                                     {{ form.name }}
                                 </div>
-                                {% if form.name.help_text %}
-                                <div class="field-help">{{ form.name.help_text }}</div>
-                                {% endif %}
                             </div>
 
                             <!-- Symbol -->
@@ -68,30 +81,23 @@
                                 <div class="form-field">
                                     {{ form.symbol }}
                                 </div>
-                                {% if form.symbol.help_text %}
-                                <div class="field-help">{{ form.symbol.help_text }}</div>
-                                {% endif %}
                             </div>
 
                             <!-- Initial Price -->
                             <div class="form-group half-width">
                                 <label class="form-label">
                                     <i class="fas fa-dollar-sign"></i>
-                                    Initial Price (USD)
+                                    Initial Price (INR)
                                 </label>
                                 <div class="form-field">
                                     <div class="price-input-group">
-                                        <span class="currency-symbol">$</span>
+                                        <span class="currency-symbol">₹</span>
                                         {{ form.current_price }}
                                     </div>
                                 </div>
-                                {% if form.current_price.help_text %}
-                                <div class="field-help">{{ form.current_price.help_text }}</div>
-                                {% endif %}
                             </div>
 
                             <!-- Total Supply -->
-                            {% if form.total_supply %}
                             <div class="form-group half-width">
                                 <label class="form-label">
                                     <i class="fas fa-layer-group"></i>
@@ -100,46 +106,20 @@
                                 <div class="form-field">
                                     {{ form.total_supply }}
                                 </div>
-                                {% if form.total_supply.help_text %}
-                                <div class="field-help">{{ form.total_supply.help_text }}</div>
-                                {% endif %}
                             </div>
-                            {% endif %}
 
-                            <!-- Market Cap -->
-                            {% if form.market_cap %}
+                            <!-- Market Cap (Price Change 24h) -->
                             <div class="form-group half-width">
                                 <label class="form-label">
                                     <i class="fas fa-chart-pie"></i>
-                                    Market Cap (USD)
+                                    24h Change (%)
                                 </label>
                                 <div class="form-field">
-                                    {{ form.market_cap }}
+                                    {{ form.price_change_24h }}
                                 </div>
-                                {% if form.market_cap.help_text %}
-                                <div class="field-help">{{ form.market_cap.help_text }}</div>
-                                {% endif %}
                             </div>
-                            {% endif %}
-
-                            <!-- Description -->
-                            {% if form.description %}
-                            <div class="form-group full-width">
-                                <label class="form-label">
-                                    <i class="fas fa-align-left"></i>
-                                    Description (Optional)
-                                </label>
-                                <div class="form-field">
-                                    {{ form.description }}
-                                </div>
-                                {% if form.description.help_text %}
-                                <div class="field-help">{{ form.description.help_text }}</div>
-                                {% endif %}
-                            </div>
-                            {% endif %}
 
                             <!-- Active Status -->
-                            {% if form.is_active %}
                             <div class="form-group full-width">
                                 <label class="form-label">
                                     <i class="fas fa-toggle-on"></i>
@@ -157,7 +137,6 @@
                                     </div>
                                 </div>
                             </div>
-                            {% endif %}
                         </div>
 
                         <!-- Form Actions -->
@@ -172,168 +151,6 @@
                             </a>
                         </div>
                     </form>
-                </div>
-            </div>
-        </div>
-
-        <!-- Information Panel -->
-        <div class="info-section">
-            <!-- Examples Card -->
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="card-title">
-                        <i class="fas fa-lightbulb"></i>
-                        Cryptocurrency Examples
-                    </h5>
-                </div>
-                <div class="card-body">
-                    <div class="examples-list">
-                        <div class="example-item" onclick="fillExample('Bitcoin', 'BTC', '45000')">
-                            <div class="example-icon bitcoin">
-                                <i class="fab fa-bitcoin"></i>
-                            </div>
-                            <div class="example-content">
-                                <div class="example-name">Bitcoin</div>
-                                <div class="example-details">Symbol: BTC • Price: $45,000</div>
-                            </div>
-                            <div class="example-action">
-                                <i class="fas fa-arrow-right"></i>
-                            </div>
-                        </div>
-
-                        <div class="example-item" onclick="fillExample('Ethereum', 'ETH', '3200')">
-                            <div class="example-icon ethereum">
-                                <i class="fab fa-ethereum"></i>
-                            </div>
-                            <div class="example-content">
-                                <div class="example-name">Ethereum</div>
-                                <div class="example-details">Symbol: ETH • Price: $3,200</div>
-                            </div>
-                            <div class="example-action">
-                                <i class="fas fa-arrow-right"></i>
-                            </div>
-                        </div>
-
-                        <div class="example-item" onclick="fillExample('Tether', 'USDT', '1.00')">
-                            <div class="example-icon tether">
-                                <i class="fas fa-dollar-sign"></i>
-                            </div>
-                            <div class="example-content">
-                                <div class="example-name">Tether</div>
-                                <div class="example-details">Symbol: USDT • Price: $1.00</div>
-                            </div>
-                            <div class="example-action">
-                                <i class="fas fa-arrow-right"></i>
-                            </div>
-                        </div>
-
-                        <div class="example-item" onclick="fillExample('TRON', 'TRX', '0.08')">
-                            <div class="example-icon tron">
-                                <i class="fas fa-coins"></i>
-                            </div>
-                            <div class="example-content">
-                                <div class="example-name">TRON</div>
-                                <div class="example-details">Symbol: TRX • Price: $0.08</div>
-                            </div>
-                            <div class="example-action">
-                                <i class="fas fa-arrow-right"></i>
-                            </div>
-                        </div>
-
-                        <div class="example-item" onclick="fillExample('MyCustomCoin', 'MCC', '0.50')">
-                            <div class="example-icon custom">
-                                <i class="fas fa-star"></i>
-                            </div>
-                            <div class="example-content">
-                                <div class="example-name">Custom Coin</div>
-                                <div class="example-details">Symbol: MCC • Price: $0.50</div>
-                            </div>
-                            <div class="example-action">
-                                <i class="fas fa-arrow-right"></i>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="examples-note">
-                        <i class="fas fa-info-circle"></i>
-                        Click on any example to auto-fill the form
-                    </div>
-                </div>
-            </div>
-
-            <!-- Guidelines Card -->
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="card-title">
-                        <i class="fas fa-clipboard-list"></i>
-                        Guidelines
-                    </h5>
-                </div>
-                <div class="card-body">
-                    <div class="guidelines-list">
-                        <div class="guideline-item">
-                            <div class="guideline-icon">
-                                <i class="fas fa-check-circle"></i>
-                            </div>
-                            <div class="guideline-text">
-                                <strong>Name:</strong> Use the full, official name of the cryptocurrency
-                            </div>
-                        </div>
-                        <div class="guideline-item">
-                            <div class="guideline-icon">
-                                <i class="fas fa-check-circle"></i>
-                            </div>
-                            <div class="guideline-text">
-                                <strong>Symbol:</strong> Use standard uppercase abbreviations (e.g., BTC, ETH)
-                            </div>
-                        </div>
-                        <div class="guideline-item">
-                            <div class="guideline-icon">
-                                <i class="fas fa-check-circle"></i>
-                            </div>
-                            <div class="guideline-text">
-                                <strong>Price:</strong> Enter current market price in USD
-                            </div>
-                        </div>
-                        <div class="guideline-item">
-                            <div class="guideline-icon">
-                                <i class="fas fa-check-circle"></i>
-                            </div>
-                            <div class="guideline-text">
-                                <strong>Supply:</strong> Total number of coins that will ever exist
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Important Notes -->
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="card-title">
-                        <i class="fas fa-exclamation-triangle"></i>
-                        Important Notes
-                    </h5>
-                </div>
-                <div class="card-body">
-                    <div class="alert alert-warning">
-                        <div class="alert-content">
-                            <i class="fas fa-bell"></i>
-                            <div>
-                                <h6>Market Impact</h6>
-                                <p>New cryptocurrencies will be immediately available for user deposits and trading.</p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="alert alert-info">
-                        <div class="alert-content">
-                            <i class="fas fa-users"></i>
-                            <div>
-                                <h6>User Visibility</h6>
-                                <p>Active cryptocurrencies will appear in user deposit forms and portfolio displays.</p>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -712,44 +529,4 @@
     }
 }
 </style>
-{% endblock %}
-
-{% block scripts %}
-<script>
-function fillExample(name, symbol, price) {
-    // Fill form fields with example data
-    const nameField = document.querySelector('input[name="name"]');
-    const symbolField = document.querySelector('input[name="symbol"]');
-    const priceField = document.querySelector('input[name="current_price"]');
-    
-    if (nameField) nameField.value = name;
-    if (symbolField) symbolField.value = symbol;
-    if (priceField) priceField.value = price;
-    
-    // Add visual feedback
-    const filledFields = [nameField, symbolField, priceField].filter(field => field);
-    filledFields.forEach(field => {
-        field.style.borderColor = 'rgba(16, 185, 129, 0.5)';
-        field.style.backgroundColor = 'rgba(16, 185, 129, 0.05)';
-        
-        setTimeout(() => {
-            field.style.borderColor = '';
-            field.style.backgroundColor = '';
-        }, 2000);
-    });
-    
-    // Show success message
-    const examples = document.querySelector('.examples-note');
-    const originalText = examples.innerHTML;
-    examples.innerHTML = '<i class="fas fa-check-circle"></i> Form filled with ' + name + ' data!';
-    examples.style.background = 'rgba(16, 185, 129, 0.1)';
-    examples.style.color = '#065f46';
-    
-    setTimeout(() => {
-        examples.innerHTML = originalText;
-        examples.style.background = '';
-        examples.style.color = '';
-    }, 3000);
-}
-</script>
 {% endblock %}

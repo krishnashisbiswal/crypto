@@ -37,8 +37,8 @@
         </div>
         <div class="price-display">
             <div class="price-label">Current Price</div>
-            <div class="price-value">${{ crypto.current_price|floatformat:8 }}</div>
-            <div class="price-note">USD per {{ crypto.symbol }}</div>
+            <div class="price-value">₹{{ crypto.current_price|floatformat:8 }}</div>
+            <div class="price-note">INR per {{ crypto.symbol }}</div>
         </div>
         <div class="market-info">
             <div class="market-item">
@@ -139,7 +139,7 @@
                                 New Price (USD)
                             </label>
                             <div class="price-input-group">
-                                <span class="currency-symbol">$</span>
+                                <span class="currency-symbol">₹</span>
                                 <input type="number" step="0.00000001" class="form-control price-input" name="new_price" id="id_new_price" placeholder="46000.50">
                             </div>
                             <div class="field-help">
@@ -157,7 +157,7 @@
                             <div class="preview-content">
                                 <div class="preview-row">
                                     <span>Current Price:</span>
-                                    <span id="currentPricePreview">${{ crypto.current_price|floatformat:8 }}</span>
+                                    <span id="currentPricePreview">₹{{ crypto.current_price|floatformat:8 }}</span>
                                 </div>
                                 <div class="preview-row">
                                     <span>New Price:</span>
@@ -212,7 +212,7 @@
                             {% endif %}
                         </div>
                         <div class="history-price">
-                            ${{ item.price|floatformat:2 }}
+                            ₹{{ item.price|floatformat:2 }}
                         </div>
                     </div>
                 {% empty %}
@@ -839,11 +839,11 @@ document.addEventListener('DOMContentLoaded', function() {
         
         if (newPrice !== null) {
             pricePreview.style.display = 'block';
-            document.getElementById('newPricePreview').textContent = '$' + newPrice.toFixed(8);
-            
+            document.getElementById('newPricePreview').textContent = '₹' + newPrice.toFixed(8);
+
             const changeElement = document.getElementById('changePreview');
             const changePercent = ((change / currentPrice) * 100).toFixed(2);
-            changeElement.textContent = (change >= 0 ? '+' : '') + '$' + change.toFixed(8) + ' (' + (change >= 0 ? '+' : '') + changePercent + '%)';
+            changeElement.textContent = (change >= 0 ? '+' : '') + '₹' + change.toFixed(8) + ' (' + (change >= 0 ? '+' : '') + changePercent + '%)';
             changeElement.className = 'change-amount ' + (change >= 0 ? 'positive' : 'negative');
         } else {
             pricePreview.style.display = 'none';

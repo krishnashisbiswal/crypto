@@ -4,11 +4,14 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic import ListView, CreateView, UpdateView
 from django.http import JsonResponse
 from django.contrib import messages
-from .models import Cryptocurrency,PriceHistory
-from .forms import CryptocurrencyForm, PriceUpdateForm
 from decimal import Decimal
-from deposits.models import Deposit , Cryptocurrency
-from django.utils.timezone import now
+from .models import Cryptocurrency, PriceHistory
+from .forms import CryptocurrencyForm, PriceUpdateForm
+from deposits.models import Deposit  # ✅ Corrected this line
+from django.utils.timezone import now  # ✅ Added for last_updated
+from django.views.decorators.http import require_POST
+from django.views.generic import DetailView
+
 def is_staff(user):
     return user.is_staff
 
@@ -40,7 +43,7 @@ def dashboard(request):
 
     for data in portfolio_dict.values():
         crypto = data['cryptocurrency']
-        price = Decimal(crypto.current_price)
+        price = Decimal(str(crypto.current_price))  # ✅ Use str to avoid float rounding issues
         balance = data['balance']
         invested = data['total_invested']
         current_value = price * balance
@@ -49,6 +52,7 @@ def dashboard(request):
 
         data.update({
             'current_price': price,
+            'price_change_24h': Decimal(str(crypto.price_change_24h)),  # ✅ Add this
             'current_value': current_value,
             'profit_loss': profit_loss,
             'profit_loss_percentage': profit_loss_percentage,
@@ -67,6 +71,7 @@ def dashboard(request):
         'total_invested': total_invested,
         'total_profit_loss': total_profit_loss,
         'total_profit_loss_percentage': total_profit_loss_percentage,
+        'last_updated': now(),  # ✅ Fixed: Pass this for template
     }
 
     return render(request, 'trading/dashboard.html', context)
@@ -95,6 +100,25 @@ class CryptocurrencyListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
     
     def test_func(self):
         return self.request.user.is_staff
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        cryptocurrencies = context['cryptocurrencies']
+
+        # Compute stats
+        total = cryptocurrencies.count()
+        positive = cryptocurrencies.filter(price_change_24h__gte=0).count()
+        negative = cryptocurrencies.filter(price_change_24h__lt=0).count()
+        inactive = cryptocurrencies.filter(is_active=False).count()
+
+        # Add to context
+        context.update({
+            'total_cryptos': total,
+            'positive_change_count': positive,
+            'negative_change_count': negative,
+            'inactive_count': inactive,
+        })
+        return context
 
 class CryptocurrencyCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     model = Cryptocurrency
@@ -145,3 +169,28 @@ def price_update(request, crypto_id):
         'crypto': crypto,
         'price_history': price_history
     })
+
+@require_POST
+def toggle_crypto_status(request, crypto_id):
+    try:
+        crypto = Cryptocurrency.objects.get(pk=crypto_id)
+    except Cryptocurrency.DoesNotExist:
+        return JsonResponse({'success': False, 'error': 'Cryptocurrency not found'}, status=404)
+
+    crypto.is_active = not crypto.is_active
+    crypto.save()
+
+    return JsonResponse({
+        'success': True,
+        'new_status': crypto.is_active,
+        'message': f"{crypto.name} is now {'Active' if crypto.is_active else 'Inactive'}"
+    })
+
+
+class CryptocurrencyDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
+    model = Cryptocurrency
+    template_name = 'trading/admin/crypto_detail.html'
+    context_object_name = 'crypto'
+
+    def test_func(self):
+        return self.request.user.is_staff
