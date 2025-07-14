@@ -11,6 +11,9 @@ from deposits.models import Deposit  # ✅ Corrected this line
 from django.utils.timezone import now  # ✅ Added for last_updated
 from django.views.decorators.http import require_POST
 from django.views.generic import DetailView
+from django.contrib.auth.models import User  # ✅ Import User model for admin dashboard
+from deposits.models import Deposit  # If you need Deposit stats
+from accounts.models import UserProfile  # Import UserProfile for admin dashboard
 
 def is_staff(user):
     return user.is_staff
@@ -18,6 +21,11 @@ def is_staff(user):
 @login_required
 def dashboard(request):
     user = request.user
+
+     # Redirect admin users to admin dashboard
+    if user.is_staff or user.is_superuser:
+        return redirect('trading:admin_crypto_list')
+    
     deposits = Deposit.objects.filter(user=user, status='approved')
 
     portfolio_dict = {}
@@ -194,3 +202,60 @@ class CryptocurrencyDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailVi
 
     def test_func(self):
         return self.request.user.is_staff
+
+@user_passes_test(lambda u: u.is_superuser)
+def admin_dashboard(request):
+    if request.method == "POST":
+        action = request.POST.get("action")
+
+        if action == "add":
+            username = request.POST.get("username")
+            first_name = request.POST.get("first_name") or ""
+            last_name = request.POST.get("last_name") or ""
+            email = request.POST.get("email")
+            password = request.POST.get("password")
+            phone = request.POST.get("phone") or ""  # <-- SAFE fallback
+            is_superuser = 'is_superuser' in request.POST
+
+            if username and password:
+                user = User(
+                    username=username,
+                    email=email,
+                    first_name=first_name,
+                    last_name=last_name,
+                    is_superuser=is_superuser,
+                    is_staff=is_superuser
+                )
+                user._skip_profile_creation = True
+                user.set_password(password)
+                user.save()
+
+                UserProfile.objects.create(user=user, phone=phone)
+
+        elif action == "edit":
+            user = User.objects.get(pk=request.POST.get("user_id"))
+            user.username = request.POST.get("username")
+            user.email = request.POST.get("email")
+            user.first_name = request.POST.get("first_name") or ""
+            user.last_name = request.POST.get("last_name") or ""
+            user.is_superuser = 'is_superuser' in request.POST
+            user.is_staff = user.is_superuser
+            user.is_active = 'is_active' in request.POST
+            user.save()
+
+            user.userprofile.phone = request.POST.get("phone")
+            user.userprofile.save()
+
+        elif action == "delete":
+            User.objects.get(pk=request.POST.get("user_id")).delete()
+
+        return redirect('trading:admin_dashboard')
+
+    context = {
+        "users": User.objects.all(),
+        "total_users": User.objects.count(),
+        "total_deposits": Deposit.objects.count() if Deposit.objects.exists() else 0,
+        "pending_deposits": Deposit.objects.filter(status='pending').count() if Deposit.objects.exists() else 0,
+        "last_updated": Deposit.objects.latest('created_at').created_at if Deposit.objects.exists() else None,
+    }
+    return render(request, 'trading/admin/dashboard.html', context)

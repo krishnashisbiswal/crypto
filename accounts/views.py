@@ -4,6 +4,19 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .forms import CustomUserCreationForm, KYCForm
 from django.contrib.auth import logout
+from django.contrib.auth.views import LoginView
+from django.urls import reverse_lazy
+
+class RoleBasedLoginView(LoginView):
+    template_name = 'registration/login.html'  # adjust if your template is different
+
+    def get_success_url(self):
+        """Decide where to send the user after login based on their role."""
+        user = self.request.user
+        if user.is_superuser:
+            return reverse_lazy('trading:admin_dashboard')
+        else:
+            return reverse_lazy('trading:dashboard')
 
 def register(request):
     if request.method == 'POST':
@@ -12,7 +25,10 @@ def register(request):
             user = form.save()
             login(request, user)
             messages.success(request, 'Registration successful!')
-            return redirect('trading:dashboard')
+            if user.is_superuser:
+                return redirect('trading:admin_dashboard')
+            else:
+                return redirect('trading:dashboard')
     else:
         form = CustomUserCreationForm()
     return render(request, 'registration/register.html', {'form': form})

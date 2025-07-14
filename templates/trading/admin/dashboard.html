@@ -1,0 +1,209 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+
+<style>
+.dashboard-container {
+  padding: 24px;
+  background: #f8fafc;
+  min-height: 100vh;
+}
+.page-header {
+        background: var(--white-bg);
+        border-radius: 16px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        box-shadow: var(--shadow-light);
+        border: 1px solid var(--border-color);
+    }
+
+    .page-title {
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        background: var(--primary-gradient);
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .page-subtitle {
+        color: var(--text-secondary);
+        font-size: 1rem;
+        margin: 0;
+    }
+    .last-updated {
+    margin-left: auto; /* This pushes it to the right */
+    font-size: 14px;
+    color: #4b5563;
+    float: right;
+  }
+</style>
+
+<div class="dashboard-container">
+<div class="page-header">
+  <div class="last-updated">
+    Last Updated: {{ last_updated|date:"M d, H:i" }}
+  </div>
+    <h1 class="page-title">
+        <i class="fas fa-tachometer-alt"></i>
+        Admin Dashboard
+    </h1>
+    <p class="page-subtitle">Review users and Edit and Delete their information</p>
+</div>
+
+  <div class="card mb-4">
+    <div class="card-header d-flex justify-content-between">
+      <h5><i class="fas fa-users me-2"></i> User Management</h5>
+      <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addUserModal">Add User</button>
+    </div>
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Username</th>
+              <th>Email</th>
+              <th>First Name</th>
+              <th>Last Name</th>
+              <th>Phone</th>
+              <th>Superuser</th>
+              <th>Active</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for user in users %}
+            <tr>
+              <td>{{ user.username }}</td>
+              <td>{{ user.email }}</td>
+              <td>{{ user.first_name }}</td>
+              <td>{{ user.last_name }}</td>
+              <td>{{ user.userprofile.phone }}</td>
+              <td>{{ user.is_superuser }}</td>
+              <td>{{ user.is_active }}</td>
+              <td>
+                <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#editUserModal{{ user.id }}">Edit</button>
+                <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteUserModal{{ user.id }}">Delete</button>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Add User Modal -->
+<div class="modal fade" id="addUserModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form method="post">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="add">
+        <div class="modal-header">
+          <h5 class="modal-title">Add New User</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <label>Username</label>
+          <input name="username" type="text" class="form-control" required>
+          <label>Email</label>
+          <input name="email" type="email" class="form-control" required>
+          <label>First Name</label>
+          <input name="first_name" type="text" class="form-control" required>
+          <label>Last Name</label>
+          <input name="last_name" type="text" class="form-control" required>
+          <label>Phone</label>
+          <input name="phone" type="text" class="form-control" required>
+          <label>Password</label>
+          <input name="password" type="password" class="form-control" required>
+          <div class="form-check mt-2">
+            <input name="is_superuser" type="checkbox" class="form-check-input">
+            <label class="form-check-label">Superuser</label>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Create</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+{% for user in users %}
+<!-- Edit Modal -->
+<div class="modal fade" id="editUserModal{{ user.id }}" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form method="post">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="edit">
+        <input type="hidden" name="user_id" value="{{ user.id }}">
+        <div class="modal-header">
+          <h5 class="modal-title">Edit {{ user.username }}</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <label>Username</label>
+          <input name="username" type="text" class="form-control" value="{{ user.username }}" required>
+          <label>Email</label>
+          <input name="email" type="email" class="form-control" value="{{ user.email }}" required>
+          <label>First Name</label>
+          <input name="first_name" type="text" class="form-control" value="{{ user.first_name }}" required>
+          <label>Last Name</label>
+          <input name="last_name" type="text" class="form-control" value="{{ user.last_name }}" required>
+          <label>Phone</label>
+          <input name="phone" type="text" class="form-control" value="{{ user.userprofile.phone }}" required>
+          <div class="form-check mt-2">
+            <input name="is_superuser" type="checkbox" class="form-check-input" {% if user.is_superuser %}checked{% endif %}>
+            <label class="form-check-label">Superuser</label>
+          </div>
+          <div class="form-check">
+            <input name="is_active" type="checkbox" class="form-check-input" {% if user.is_active %}checked{% endif %}>
+            <label class="form-check-label">Active</label>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Save</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Modal -->
+<div class="modal fade" id="deleteUserModal{{ user.id }}" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form method="post">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="delete">
+        <input type="hidden" name="user_id" value="{{ user.id }}">
+        <div class="modal-header">
+          <h5 class="modal-title">Delete {{ user.username }}</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          Are you sure you want to delete <strong>{{ user.username }}</strong>?
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-danger">Delete</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endfor %}
+
+{% endblock %}

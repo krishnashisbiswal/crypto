@@ -13,4 +13,5 @@ urlpatterns = [
     path('admin/cryptocurrencies/<int:crypto_id>/update-price/', views.price_update, name='admin_price_update'),
     path('admin/cryptocurrencies/<int:crypto_id>/toggle/', views.toggle_crypto_status, name='toggle_crypto_status'),
     path('admin/cryptocurrencies/<int:pk>/', views.CryptocurrencyDetailView.as_view(), name='admin_crypto_detail'),
+    path('admin/dashboard/', views.admin_dashboard, name='admin_dashboard'),
 ]
