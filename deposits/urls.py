@@ -6,7 +6,7 @@ app_name = 'deposits'
 urlpatterns = [
     path('create/', views.deposit_create, name='deposit_create'),
     path('list/', views.deposit_list, name='deposit_list'),
-    
+     path('api/get-wallet-address/<int:coin_id>/', views.get_wallet_address, name='get_wallet_address'),
     # Admin URLs
     path('admin/list/', views.AdminDepositListView.as_view(), name='admin_list'),
     # In your deposits/urls.py

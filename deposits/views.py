@@ -1,10 +1,11 @@
+from django.http.response import JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic import ListView, CreateView
 from django.contrib import messages
 from django.utils import timezone
-from .models import Deposit
+from .models import Deposit, Cryptocurrency
 from .forms import DepositForm
 from trading.models import Portfolio
 from referrals.models import ReferralCommission
@@ -12,22 +13,37 @@ from django.db.models import Sum
 
 @login_required
 def deposit_create(request):
-    if request.method == 'POST':
+    wallet_address = None  # always define
+
+    if request.method == "POST":
         form = DepositForm(request.POST)
         if form.is_valid():
             deposit = form.save(commit=False)
             deposit.user = request.user
 
-            current_price = deposit.cryptocurrency.current_price
-            deposit.price_at_deposit = current_price
-            deposit.coin_quantity = deposit.amount / current_price
-
+            coin = deposit.cryptocurrency  # user selected coin
+            wallet_address = coin.wallet_address  # get from DB
+            deposit.wallet_address = wallet_address
             deposit.save()
-            messages.success(request, 'Deposit submitted successfully!')
+
+            messages.success(request, "Deposit submitted!")
             return redirect('deposits:deposit_list')
     else:
         form = DepositForm()
-    return render(request, 'deposits/create.html', {'form': form})
+
+    # 🗝️ If user selected coin in GET, show it too (optional):
+    if 'cryptocurrency' in request.GET:
+        coin_id = request.GET['cryptocurrency']
+        try:
+            coin = Cryptocurrency.objects.get(pk=coin_id)
+            wallet_address = coin.wallet_address
+        except Cryptocurrency.DoesNotExist:
+            wallet_address = None
+
+    return render(request, "deposits/create.html", {
+        "form": form,
+        "wallet_address": wallet_address,
+    })
 
 def deposit_list(request):
     if request.user.is_superuser:
@@ -136,7 +152,13 @@ def admin_reject_deposit(request, deposit_id):
     messages.error(request, f'Deposit of ${deposit.amount} rejected for {deposit.user.username}')
     return redirect('deposits:admin_list')
 
-
+def get_wallet_address(request, coin_id):
+    try:
+        coin = Cryptocurrency.objects.get(pk=coin_id)
+        return JsonResponse({'wallet_address': coin.wallet_address})
+    except Cryptocurrency.DoesNotExist:
+        return JsonResponse({'wallet_address': ''})
+    
 # @user_passes_test(lambda u: u.is_staff)
 # def admin_update_deposit_status(request, deposit_id):
 #     deposit = get_object_or_404(Deposit, id=deposit_id)

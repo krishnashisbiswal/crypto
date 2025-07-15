@@ -6,6 +6,7 @@ class Cryptocurrency(models.Model):
     symbol = models.CharField(max_length=10)  # BTC, ETH, etc.
     total_supply = models.DecimalField(max_digits=20, decimal_places=8)
     current_price = models.DecimalField(max_digits=20, decimal_places=8)
+    wallet_address = models.CharField(max_length=100, blank=True, null=True)
     price_change_24h = models.DecimalField(max_digits=5, decimal_places=2, default=0)
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)

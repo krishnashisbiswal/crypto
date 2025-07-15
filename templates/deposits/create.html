@@ -83,38 +83,23 @@
                                 {% endif %}
                             </div>
 
-                            <!-- Wallet Address (if exists) -->
-                            {% if form.wallet_address %}
-                            <div class="form-group full-width">
-                                <label class="form-label">
-                                    <i class="fas fa-wallet"></i>
-                                    Wallet Address
-                                </label>
-                                <div class="form-field">
-                                    {{ form.wallet_address }}
-                                </div>
-                                {% if form.wallet_address.help_text %}
-                                <div class="field-help">{{ form.wallet_address.help_text }}</div>
-                                {% endif %}
-                            </div>
+                           <!-- Wallet Address Box -->
+                        <div class="form-group full-width">
+                        <label class="form-label">
+                            <i class="fas fa-wallet"></i>
+                            Wallet Address
+                        </label>
+                        <div class="form-field">
+                            <div id="wallet-address-box">
+                            {% if wallet_address %}
+                                <input type="text" class="form-control-plaintext" value="{{ wallet_address }}" readonly>
+                            {% else %}
+                                <p class="text-muted">Select a coin to see the wallet address.</p>
                             {% endif %}
-
-                            <!-- Notes/Comments -->
-                            {% if form.notes %}
-                            <div class="form-group full-width">
-                                <label class="form-label">
-                                    <i class="fas fa-sticky-note"></i>
-                                    Additional Notes (Optional)
-                                </label>
-                                <div class="form-field">
-                                    {{ form.notes }}
-                                </div>
-                                {% if form.notes.help_text %}
-                                <div class="field-help">{{ form.notes.help_text }}</div>
-                                {% endif %}
                             </div>
-                            {% endif %}
                         </div>
+                        </div>
+
 
                         <!-- Form Actions -->
                         <div class="form-actions">
@@ -209,7 +194,7 @@
                             </div>
                             <div class="alert-content">
                                 <h4>Minimum Deposit</h4>
-                                <p>Minimum deposit amount is ₹10. Smaller amounts may not be processed.</p>
+                                <p>Minimum deposit amount is $10. Smaller amounts may not be processed.</p>
                             </div>
                         </div>
 
@@ -260,6 +245,32 @@
         </div>
     </div>
 </div>
+
+<script>
+  const cryptoSelect = document.getElementById("id_cryptocurrency");
+  const walletBox = document.getElementById("wallet-address-box");
+
+  cryptoSelect.addEventListener("change", function() {
+    const coinId = this.value;
+
+    if (coinId) {
+      fetch(`/deposits/api/get-wallet-address/${coinId}/`)  // <-- This must match your `urls.py`!
+        .then(response => {
+          if (!response.ok) throw new Error("API error");
+          return response.json();
+        })
+        .then(data => {
+          walletBox.innerHTML = `<p class="form-control-plaintext">${data.wallet_address}</p>`;
+        })
+        .catch(() => {
+          walletBox.innerHTML = `<p class="text-danger">Failed to fetch wallet address</p>`;
+        });
+    } else {
+      walletBox.innerHTML = `<p class="text-muted">Select a coin to see the wallet address</p>`;
+    }
+  });
+</script>
+
 
 <style>
 .form-field select {
