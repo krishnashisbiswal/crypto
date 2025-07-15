@@ -6,14 +6,14 @@ from decimal import Decimal
 class CryptocurrencyForm(forms.ModelForm):
     class Meta:
         model = Cryptocurrency
-        fields = ['name', 'symbol', 'total_supply', 'current_price', 'price_change_24h', 'is_active']
+        fields = ['name', 'symbol', 'total_supply', 'current_price', 'is_active', 'wallet_address']
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'e.g., Bitcoin'}),
             'symbol': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'e.g., BTC'}),
             'total_supply': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.00000001'}),
             'current_price': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.00000001'}),
-            'price_change_24h': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01'}),
-            'is_active': forms.CheckboxInput(attrs={'class': 'form-check-input'})
+            'is_active': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+            'wallet_address': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Receiving Wallet Address'}),
         }
 
 class PriceUpdateForm(forms.Form):
